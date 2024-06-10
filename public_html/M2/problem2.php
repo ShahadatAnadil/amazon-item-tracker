@@ -9,6 +9,7 @@ function getTotal($arr) {
     //start edits
     //note: use the $arr variable, don't directly touch $a1-$a4
     //TODO do adding here
+    //sha38 5-31-2024
     foreach ($arr as $value) {
         $total += $value;    
     }
