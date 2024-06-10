@@ -9,7 +9,7 @@ function processArray($arr) {
     //start edits
     //note: use the $arr variable to iterate over, don't directly touch $a1-$a4
     //we start by iterating over each number in the array. We are taking each number from the array and dividing by 2 and getting the remainder. The '!=0' check if the remainder is not equal to zero, if remainder is not zero, the number is odd. If the number is odd (true), it will print out the number. 
-    //sha38-5-31-2024
+    //sha38 5-31-2024
     foreach ($arr as $value) {
         if ($value % 2 !=0) {
            
