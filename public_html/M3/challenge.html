@@ -8,26 +8,28 @@
         window.addEventListener("load", () => {
             console.log("loaded via javascript");
             const navLinks = document.querySelectorAll("nav a");
-            navLinks.forEach(link=>) {
+            navLinks.forEach(link=> {
                 link.addEventListener("click", (event) => {
                     event.preventDefault();
                     const linkText = event.target.textContent;
                     document.querySelector("h1").textContent = linkText;
                     document.title = linkText;
                     updateCurrentPage(linkText);
+                    const href = event.target.getAttribute('href');
+                    history.pushState({}, '', href);
                 });
-            }
+            });
         });
         function getCurrentSelection() {
             setTimeout(() => {
                 //added this delay here as some solutions may require it to update properly (i.e., click code may complete before the navigation changes)
-                //TODO: add code for processing the current selection 
                 const lastClickedLink = localStorage.getItem('lastClickedLink');
                 if(lastClickedLink) {
-                    console.log('Last clicked Link: ', lastClickedLink)
+                    console.log('Last clicked Link: ', lastClickedLink);
+                    updateCurrentPage(lastClickedLink);
                 }
 
-                updateCurrentPage(lastClickedLink)
+                
                 //Note: likely you'll want to call updateCurrentPage towards the end
             }, 100);
         }
@@ -45,21 +47,25 @@
         nav {
             background-color:beige;
             padding:10px;
+            box-shadow: 4px 10px 12px rgba(0,0,0, 0.1);
+            border-radius: 5px;
         }
 
         nav a:hover {
             color:rgb(40, 108, 145);
         }
 
-        h3 + ul > li:first-of-type ul li {
-            list-style: none; 
+        ul {
+            list-style-type:none;
         }
 
-        h3 + ul > li:first-of-type ul li::before {
+        h3 + ul li::before {
             content: "✓ "; 
-            margin-right: 5px; 
+            margin-right: 5px;
             color: black; 
         }
+
+
         h1, nav a {
             text-transform: uppercase;
         }
