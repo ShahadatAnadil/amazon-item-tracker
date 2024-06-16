@@ -7,6 +7,7 @@
     <script>
         window.addEventListener("load", () => {
             console.log("loaded via javascript");
+            /**sha38 6/10/24**/
             const navLinks = document.querySelectorAll("nav a");
             navLinks.forEach(link=> {
                 link.addEventListener("click", (event) => {
@@ -20,8 +21,10 @@
                 });
             });
         });
+        /**
         function getCurrentSelection() {
             setTimeout(() => {
+                //sha38 6/10/24//
                 //added this delay here as some solutions may require it to update properly (i.e., click code may complete before the navigation changes)
                 const lastClickedLink = localStorage.getItem('lastClickedLink');
                 if(lastClickedLink) {
@@ -32,9 +35,10 @@
                 
                 //Note: likely you'll want to call updateCurrentPage towards the end
             }, 100);
-        }
+        }**/
     </script>
     <style>
+        /**sha38 6/10/24**/
         nav ul {
             display:flex;
             justify-content: space-around;
