@@ -49,8 +49,23 @@ function joinArrays($users, $activities) {
     // TODO add logic here to join the arrays on userId
     $joined = []; // result array
     // Start edits
-    
+    // sha38 6/22/2024
 
+    foreach ($users as $user) {
+        foreach ($activities as $activity) {
+            if ($user['userId'] == $activity['userId']) {
+                $joined[] = [
+                    "userId" => $user['userId'],
+                    "name" => $user['name'],
+                    "age" => $user['age'],
+                    "activity" => $activity['activity']
+                ];
+                break; 
+            }
+        }
+    }
+    
+    
     // End edits
     echo "<pre>" . var_export($joined, true) . "</pre>";
 }
