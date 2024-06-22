@@ -30,7 +30,7 @@ function processBirds($birds) {
     // sha38  6/22/2024
     foreach ($birds as $bird) {
         $subset[] = [
-            "name" => $bird ["name"],
+            "name" => $bird["name"],
             "color" => $bird["color"],
             "region" => $bird["region"]
         ];
