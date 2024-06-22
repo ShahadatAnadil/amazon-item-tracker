@@ -30,9 +30,11 @@ function processCars($cars) {
     $classic_age = 25; // don't change this value
     // Start edits
     // sha38 6/22/2024
+
+    $currentYear= date("Y");
     foreach ($cars as $car) {
         $age = $currentYear - $car['year'];
-        $isClassic = $age > $classic_age;
+        $isClassic = ($age > $classic_age) ? true : false;
         $processedCars[] = [
             "id" => $car["id"],
             "make" => $car["make"],
