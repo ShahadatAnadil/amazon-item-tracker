@@ -30,47 +30,61 @@ require_once(__DIR__ . "/../../partials/nav.php");
     //TODO 3:
     $hasError = false;
     if (empty($email)) {
-        echo "Email must not be empty<br>";
+        flash("Email must not be empty<br>");
         $hasError = true;
     }
     //sanitize
-    $email = filter_var($email, FILTER_SANITIZE_EMAIL);
+    //$email = filter_var($email, FILTER_SANITIZE_EMAIL);
+    $email = sanitize_email($email);
     //validate
-    if (!filter_var($email, FILTER_VALIDATE_EMAIL)){
-        echo "Please enter a valid email<br>";
+    /*if (!filter_var($email, FILTER_VALIDATE_EMAIL)){
+        flash("Please enter a valid email<br>");
         $hasError=true;
+    }*/
+    if(!is_valid_email($email)) {
+        flash("please enter a valid email <br>");
+        $hasError =true;
     }
     if (empty($password)) {
-        echo "Password must not be empty<br>";
+        flash("Password must not be empty<br>");
         $hasError = true;
     }
     
     if (strlen($password) < 8) {
-        echo "Password must be at least 8 characters long<br>";
+        flash("Password must be at least 8 characters long<br>");
         $hasError = true;
     }
     
     if (!$hasError) {
         //TODO 4
-       $db = getDB();
-       $stmt = $db -> prepare("SELECT email, password from Users where email = :email");
-       try {
-        $r = $stmt -> fetch(PDO::FETCH_ASSOC);
-        if ($user) {
-            $hash = $user["password"];
-            unset($user["password"]);
-            if (password_verify($password, $hash)) {
-                echo "Welcome $email";
-            } else {
-                echo "Invalid password";
+        $db = getDB();
+        $stmt = $db->prepare("SELECT id, email, username, password from Users where email = :email");
+        try {
+            $r = $stmt->execute([":email" => $email]);
+            if ($r) {
+                $user = $stmt->fetch(PDO::FETCH_ASSOC);
+                if ($user) {
+                    $hash = $user["password"];
+                    unset($user["password"]);
+                    if (password_verify($password, $hash)) {
+                        flash("Welcome $email");
+                        $_SESSION["user"] = $user;
+                        die(header("Location: home.php"));
+                    } else {
+                        flash("Invalid password", "danger");
+                    }
+                } else {
+                    flash("Email not found", "danger");
+                }
             }
-        } else {
-            echo "Email not found";
+        } catch (Exception $e) {
+            flash("<pre>" . var_export($e, true) . "</pre>");
         }
-        }catch (Exception $e) {
-        echo "<pre>" . var_export($e, true) . "</pre";} 
-        }
+    }
+    
+    
     
 
- }
+}
 ?>
+<?php require_once(__DIR__ . "/../../partials/flash.php");
