@@ -1,6 +1,7 @@
 <?php
 require(__DIR__ . "/../../partials/nav.php");
 ?>
+
 <form onsubmit="return validate(this)" method="POST">
     <div>
         <label for="email">Email/Username</label>
@@ -14,12 +15,11 @@ require(__DIR__ . "/../../partials/nav.php");
 </form>
 <script>
     function validate(form) {
-        //TODO 1: implement JavaScript validation
+        //TODO 1: implement JavaScript validation  sha38 7/9/2024
         //ensure it returns false for an error and true for success
         let email = form.email.value.trim();
         let password = form.password.value;
         let isValid = true;
-
         console.log("Starting validation");
         console.log("Email: ", email);
         console.log("Password: ", password);
@@ -28,34 +28,20 @@ require(__DIR__ . "/../../partials/nav.php");
             flash("[Client] Invalid email or username", "danger");
             isValid = false;
         }
-
         if (!validatePassword(password)) {
             flash("[Client] Password must be at least 8 characters long", "danger");
             isValid = false;
         }
-
         console.log("Validation result: ", isValid)
         return isValid;
     }
-
-    /*function validateEmailOrUsername(email) {
-        return email.length > 0;
-    }*/
-
     function validateEmailOrUsername(email) {
-        // Basic email validation regex
         let regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
         return regex.test(email);
     }
-
     function validatePassword(password) {
         return password.length >= 8;
     }
-
-    /*function flash(message, type) {
-        console.log(message);
-    } */
-
     console.log(flash());
 </script>
 
@@ -64,7 +50,6 @@ require(__DIR__ . "/../../partials/nav.php");
 if (isset($_POST["email"]) && isset($_POST["password"])) {
     $email = se($_POST, "email", "", false);
     $password = se($_POST, "password", "", false);
-
     //TODO 3
     $hasError = false;
     if (empty($email)) {
@@ -72,14 +57,8 @@ if (isset($_POST["email"]) && isset($_POST["password"])) {
         $hasError = true;
     }
     if (str_contains($email, "@")) {
-        //sanitize
-        //$email = filter_var($email, FILTER_SANITIZE_EMAIL);
         $email = sanitize_email($email);
         //validate
-        /*if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
-            flash("Invalid email address");
-            $hasError = true;
-        }*/
         if (!is_valid_email($email)) {
             flash("Invalid email address");
             $hasError = true;

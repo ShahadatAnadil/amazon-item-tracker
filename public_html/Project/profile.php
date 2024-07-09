@@ -114,6 +114,7 @@ $username = get_username();
 </form>
 
 <script>
+    /*
     function validate(form) {
         let email = form.email.value.trim();
         let username = form.username.value.trim();
@@ -210,7 +211,7 @@ $username = get_username();
         return available;
     }
 
-    
+    */
 
 </script>
 <?php
