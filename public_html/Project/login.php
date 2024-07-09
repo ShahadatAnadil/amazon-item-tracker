@@ -46,7 +46,7 @@ require(__DIR__ . "/../../partials/nav.php");
 </script>
 
 <?php
-//TODO 2: add PHP Code
+//TODO 2: add PHP Code sha38 7/9/2024
 if (isset($_POST["email"]) && isset($_POST["password"])) {
     $email = se($_POST, "email", "", false);
     $password = se($_POST, "password", "", false);
@@ -79,7 +79,7 @@ if (isset($_POST["email"]) && isset($_POST["password"])) {
     }
     if (!$hasError) {
         //flash("Welcome, $email");
-        //TODO 4
+        //TODO 4 sha38 7/9/2024
         $db = getDB();
         $stmt = $db->prepare("SELECT id, email, username, password from Users 
         where email = :email or username = :email");
@@ -118,7 +118,7 @@ if (isset($_POST["email"]) && isset($_POST["password"])) {
             flash("<pre>" . var_export($e, true) . "</pre>");
         }
     }
-}
+}// sha38 7/9/2024
 ?>
 <?php
 require(__DIR__ . "/../../partials/flash.php");

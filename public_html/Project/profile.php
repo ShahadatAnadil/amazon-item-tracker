@@ -1,4 +1,5 @@
 <?php
+//sha38 7/9/2024
 require_once(__DIR__ . "/../../partials/nav.php");
 if (!is_logged_in()) {
     die(header("Location: login.php"));
@@ -114,7 +115,7 @@ $username = get_username();
 </form>
 
 <script>
-    /*
+    
     function validate(form) {
         let email = form.email.value.trim();
         let username = form.username.value.trim();
@@ -187,7 +188,7 @@ $username = get_username();
     /*function flash(message, type) {
         console.log(message);
         // Implement actual flashing logic if needed
-    }*/
+    }
 
     function isUsernameAvailable(username) {
         const url = 'check_username.php'; 
