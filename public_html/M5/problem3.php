@@ -50,6 +50,7 @@ function joinArrays($users, $activities) {
     $joined = []; // result array
     // Start edits
     // sha38 6/22/2024
+    
 
     foreach ($users as $user) {
         foreach ($activities as $activity) {
@@ -60,11 +61,10 @@ function joinArrays($users, $activities) {
                     "age" => $user['age'],
                     "activity" => $activity['activity']
                 ];
-                break; 
+                break;
             }
         }
     }
-    
     
     // End edits
     echo "<pre>" . var_export($joined, true) . "</pre>";
