@@ -2,6 +2,7 @@
 require(__DIR__ . "/../../partials/nav.php");
 reset_session();
 ?>
+
 <form onsubmit="return validate(this)" method="POST">
     <div>
         <label for="email">Email</label>
@@ -20,10 +21,12 @@ reset_session();
         <input type="password" name="confirm" required minlength="8" />
     </div>
     <input type="submit" value="Register" />
+    
 </form>
+
 <script>
     function validate(form) {
-        //TODO 1: implement JavaScript validation
+        //TODO 1: implement JavaScript validation sha38 7/9/2024
         //ensure it returns false for an error and true for success
         
         let email = form.email.value.trim();
