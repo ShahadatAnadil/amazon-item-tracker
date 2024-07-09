@@ -16,12 +16,49 @@ require(__DIR__ . "/../../partials/nav.php");
     function validate(form) {
         //TODO 1: implement JavaScript validation
         //ensure it returns false for an error and true for success
+        let email = form.email.value.trim();
+        let password = form.password.value;
+        let isValid = true;
 
-        //TODO update clientside validation to check if it should
-        //valid email or username
-        return true;
+        console.log("Starting validation");
+        console.log("Email: ", email);
+        console.log("Password: ", password);
+
+        if (!validateEmailOrUsername(email)) {
+            flash("[Client] Invalid email or username", "danger");
+            isValid = false;
+        }
+
+        if (!validatePassword(password)) {
+            flash("[Client] Password must be at least 8 characters long", "danger");
+            isValid = false;
+        }
+
+        console.log("Validation result: ", isValid)
+        return isValid;
     }
+
+    /*function validateEmailOrUsername(email) {
+        return email.length > 0;
+    }*/
+
+    function validateEmailOrUsername(email) {
+        // Basic email validation regex
+        let regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        return regex.test(email);
+    }
+
+    function validatePassword(password) {
+        return password.length >= 8;
+    }
+
+    /*function flash(message, type) {
+        console.log(message);
+    } */
+
+    console.log(flash());
 </script>
+
 <?php
 //TODO 2: add PHP Code
 if (isset($_POST["email"]) && isset($_POST["password"])) {

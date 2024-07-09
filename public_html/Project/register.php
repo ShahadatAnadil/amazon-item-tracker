@@ -25,9 +25,60 @@ reset_session();
     function validate(form) {
         //TODO 1: implement JavaScript validation
         //ensure it returns false for an error and true for success
+        
+        let email = form.email.value.trim();
+        let username = form.username.value.trim();
+        let password = form.password.value;
+        let confirm = form.confirm.value;
 
-        return true;
+        let isValid = true;
+
+        if (!validateEmail(email)) {
+            flash("[Client] Invalid email address", "danger");
+            isValid = false;
+        }
+
+        if (!validateUsername(username)) {
+            flash("[Client] Username must only contain 3-16 characters a-z, 0-9, _, or -", "danger");
+            isValid = false;
+        }
+
+        if (!validatePassword(password)) {
+            flash("[Client] Password must be at least 8 characters long", "danger");
+            isValid = false;
+        }
+
+        if (password !== confirm) {
+            flash("[Client] Passwords do not match", "danger");
+            isValid = false;
+        }
+
+        return isValid;
     }
+
+    function validateEmail(email) {
+        
+        let regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        return regex.test(email);
+    }
+
+    function validateUsername(username) {
+        
+        let regex = /^[a-zA-Z0-9_-]{3,16}$/;
+        return regex.test(username);
+    }
+
+    function validatePassword(password) {
+        
+        return password.length >= 8;
+    }
+
+    /*function flash(message, type) {
+        // Mocking flash function for demonstration
+        console.log(message);
+        // Implement your actual flashing logic here (e.g., showing alerts, displaying messages on the page)
+    }*/
+
 </script>
 <?php
 //TODO 2: add PHP Code

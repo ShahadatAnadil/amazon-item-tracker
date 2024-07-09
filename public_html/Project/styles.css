@@ -1,23 +1,97 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+
+body {
+    background-color: #f0f0f0; 
+    color: #333; 
+    font-family: Arial, sans-serif;
+    line-height: 1.6;
+}
+
+
+nav {
+    background-color: #333; 
+    padding: 10px 0;
+}
+
+nav ul {
+    list-style-type: none;
+    text-align: center;
+}
+
+nav li {
+    display: inline-block;
+    margin: 0 10px;
+    margin-left:20px;
+}
+
+nav li a {
+    display: block;
+    padding: 10px 15px;
+    color: #fff; 
+    text-decoration: none;
+    transition: background-color 0.3s ease;
+}
+
+nav li a:hover {
+    background-color: #555; 
+}
+
+
+.alert {
+    padding: 15px;
+    margin-bottom: 15px;
+    border-radius: 5px;
+    font-weight: bold;
+}
+
 .alert-success {
-    background-color: green
+    background-color: #4CAF50; 
+    color: #fff;
 }
 
 .alert-warning {
-    background-color: yellow;
+    background-color: #FFC107; 
+    color: #333; 
 }
 
 .alert-danger {
-    background-color: red;
+    background-color: #f44336; 
+    color: #fff;
 }
 
 .alert-info {
-    background-color: teal;
+    background-color: #1a409a; 
+    color: #fff;
 }
-nav li{display: inline; background-color: rebeccapurple;}
-nav li a{color: hotpink}
-input{border-radius: 50%;}
-body{
-    background-color: hotpink;
-    color: rgb(153, 0, 153);
 
+
+input[type="text"], input[type="password"], input[type="email"] {
+    width: calc(100%-55px);
+    padding: 10px 15px;
+    margin-bottom: 10px;
+    border: 1px solid #ccc;
+    border-radius: 3px;
+    box-shadow: inset 0 1px 2px rgba(0,0,0,0.1);
+    transition: border-color 0.3s ease;
+    
+}
+
+input[type="submit"], button {
+    background-color: #333; 
+    color: #fff;
+    border: none;
+    padding: 10px 20px;
+    cursor: pointer;
+    border-radius: 3px;
+    font-size: 16px;
+    transition: background-color 0.3s ease;
+}
+
+input[type="submit"]:hover, button:hover {
+    background-color: #555; 
 }
