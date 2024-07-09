@@ -115,7 +115,7 @@ $username = get_username();
 </form>
 
 <script>
-    /*
+    
     function validate(form) {
         let email = form.email.value.trim();
         let username = form.username.value.trim();
@@ -188,7 +188,7 @@ $username = get_username();
     /*function flash(message, type) {
         console.log(message);
         // Implement actual flashing logic if needed
-    }*/
+    }
 
     function isUsernameAvailable(username) {
         const url = 'check_username.php'; 
