@@ -28,7 +28,7 @@ reset_session();
     function validate(form) {
         //TODO 1: implement JavaScript validation sha38 7/9/2024
         //ensure it returns false for an error and true for success
-        
+        //sha38 7/9/2024
         let email = form.email.value.trim();
         let username = form.username.value.trim();
         let password = form.password.value;
@@ -75,6 +75,7 @@ reset_session();
         
         return password.length >= 8;
     }
+    //sha38 7/9/2024
 
     /*function flash(message, type) {
         // Mocking flash function for demonstration
@@ -84,7 +85,7 @@ reset_session();
 
 </script>
 <?php
-//TODO 2: add PHP Code
+//TODO 2: add PHP Code SHA38 7/9/2024
 if (isset($_POST["email"]) && isset($_POST["password"]) && isset($_POST["confirm"]) && isset($_POST["username"])) {
     $email = se($_POST, "email", "", false);
     $password = se($_POST, "password", "", false);
@@ -138,6 +139,7 @@ if (isset($_POST["email"]) && isset($_POST["password"]) && isset($_POST["confirm
         }
     }
 }
+//sha38 7/9/2024
 ?>
 <?php
 require(__DIR__ . "/../../partials/flash.php");
