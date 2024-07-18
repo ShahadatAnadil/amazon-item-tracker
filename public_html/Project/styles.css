@@ -49,25 +49,6 @@ nav li a:hover {
     font-weight: bold;
 }
 
-.alert-success {
-    background-color: #4CAF50; 
-    color: #fff;
-}
-
-.alert-warning {
-    background-color: #FFC107; 
-    color: #333; 
-}
-
-.alert-danger {
-    background-color: #f44336; 
-    color: #fff;
-}
-
-.alert-info {
-    background-color: #1a409a; 
-    color: #fff;
-}
 
 
 input[type="text"], input[type="password"], input[type="email"] {

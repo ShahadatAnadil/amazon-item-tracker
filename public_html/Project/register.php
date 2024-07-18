@@ -2,27 +2,15 @@
 require(__DIR__ . "/../../partials/nav.php");
 reset_session();
 ?>
-
-<form onsubmit="return validate(this)" method="POST">
-    <div>
-        <label for="email">Email</label>
-        <input type="email" name="email" required />
-    </div>
-    <div>
-        <label for="username">Username</label>
-        <input type="text" name="username" required maxlength="30" />
-    </div>
-    <div>
-        <label for="pw">Password</label>
-        <input type="password" id="pw" name="password" required minlength="8" />
-    </div>
-    <div>
-        <label for="confirm">Confirm</label>
-        <input type="password" name="confirm" required minlength="8" />
-    </div>
-    <input type="submit" value="Register" />
-    
-</form>
+<div class="container-fluid">
+    <form onsubmit="return validate(this)" method="POST">
+        <?php render_input(["type" => "email", "id" => "email", "name" => "email", "label" => "Email", "rules" => ["required" => true]]); ?>
+        <?php render_input(["type" => "text", "id" => "username", "name" => "username", "label" => "Username", "rules" => ["required" => true, "maxlength" => 30]]); ?>
+        <?php render_input(["type" => "password", "id" => "password", "name" => "password", "label" => "Password", "rules" => ["required" => true, "minlength" => 8]]); ?>
+        <?php render_input(["type" => "password", "id" => "confirm", "name" => "confirm", "label" => "Confirm Password", "rules" => ["required" => true, "minlength" => 8]]); ?>
+        <?php render_button(["text" => "Register", "type" => "submit"]); ?>
+    </form>
+</div>
 
 <script>
     function validate(form) {
@@ -60,19 +48,19 @@ reset_session();
     }
 
     function validateEmail(email) {
-        
+
         let regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
         return regex.test(email);
     }
 
     function validateUsername(username) {
-        
+
         let regex = /^[a-zA-Z0-9_-]{3,16}$/;
         return regex.test(username);
     }
 
     function validatePassword(password) {
-        
+
         return password.length >= 8;
     }
     //sha38 7/9/2024
@@ -82,10 +70,9 @@ reset_session();
         console.log(message);
         // Implement your actual flashing logic here (e.g., showing alerts, displaying messages on the page)
     }*/
-
 </script>
 <?php
-//TODO 2: add PHP Code SHA38 7/9/2024
+//TODO 2: add PHP Code
 if (isset($_POST["email"]) && isset($_POST["password"]) && isset($_POST["confirm"]) && isset($_POST["username"])) {
     $email = se($_POST, "email", "", false);
     $password = se($_POST, "password", "", false);
@@ -134,12 +121,11 @@ if (isset($_POST["email"]) && isset($_POST["password"]) && isset($_POST["confirm
         try {
             $stmt->execute([":email" => $email, ":password" => $hash, ":username" => $username]);
             flash("Successfully registered!", "success");
-        } catch (Exception $e) {
+        } catch (PDOException $e) {
             users_check_duplicate($e->errorInfo);
         }
     }
 }
-//sha38 7/9/2024
 ?>
 <?php
 require(__DIR__ . "/../../partials/flash.php");
