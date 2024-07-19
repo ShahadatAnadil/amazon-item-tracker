@@ -1,0 +1,1 @@
+ALTER TABLE `IT202-S24-ProductDetails` MODIFY COLUMN product_title VARCHAR(512);
