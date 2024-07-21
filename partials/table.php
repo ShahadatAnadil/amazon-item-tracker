@@ -1,3 +1,4 @@
+
 <?php if (isset($data)) : ?>
     <?php
     // Setup some variables for readability
