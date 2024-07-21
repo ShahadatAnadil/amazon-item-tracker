@@ -15,7 +15,7 @@ foreach ($env_keys as $key) {
         $API_KEYS[$key] = $API_KEY;
     }
     if (!isset($API_KEYS[$key]) || !$API_KEYS[$key]) {
-        error_log("Faild to load api key for env key $key");
+        error_log("Failed to load api key for env key $key");
     }
     unset($API_KEY);
 }
