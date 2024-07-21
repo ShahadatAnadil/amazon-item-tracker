@@ -8,6 +8,8 @@ if (!has_role("Admin")) {
     die(header("Location: $BASE_PATH" . "/home.php"));
 }
 
+
+
 if (isset($_POST["action"])) {
     $action = $_POST["action"];
     $asin = strtoupper(se($_POST, "asin", "", false));
@@ -19,6 +21,7 @@ if (isset($_POST["action"])) {
             error_log("Data from API: " . var_export($result, true));
             if ($result && isset($result['params'])) {
                 $data = $result['params'];
+                $data["is_api"] = 1;
             } else {
                 flash("No data found for ASIN $asin", "warning");
             }
@@ -38,12 +41,11 @@ if (isset($_POST["action"])) {
                             $value = json_encode($value);
                         }
                         if (in_array($key, ["product_price", "product_original_price", "product_price_max"]) && !is_null($value)) {
-                            $value = str_replace('$', '', $value);
-                            $value = str_replace(',', '', $value);
+                            $value = str_replace(['$', ','], '', $value);
                             $value = (float)$value;
                         }
-                        if (is_bool($value)) {
-                            $value = $value ? 1 : 0;
+                        if (in_array($key, ["is_best_seller", "is_amazon_choice", "is_prime", "climate_pledge_friendly"])) {
+                            $value = isset($value) && $value ? 1 : 0;
                         }
                         $columns[] = "`$key` = :$key";
                         $params[":$key"] = $value;
@@ -78,6 +80,16 @@ if (isset($_POST["action"])) {
 
                 foreach ($data as $key => $value) {
                     if (!is_null($value)) {
+                        if (is_array($value)) {
+                            $value = json_encode($value);
+                        }
+                        if (in_array($key, ["product_price", "product_original_price", "product_price_max"]) && !is_null($value)) {
+                            $value = str_replace(['$', ','], '', $value);
+                            $value = (float)$value;
+                        }
+                        if (in_array($key, ["is_best_seller", "is_amazon_choice", "is_prime", "climate_pledge_friendly"])) {
+                            $value = isset($value) && $value ? 1 : 0;
+                        }
                         $columns[] = "`$key`";
                         $placeholders[] = ":$key";
                         $params[":$key"] = $value;
@@ -113,8 +125,12 @@ if (isset($_POST["action"])) {
                         $stmt->execute($params);
                         flash("Inserted record " . $db->lastInsertId(), "success");
                     } catch (PDOException $e) {
-                        error_log("Something broke with the query: " . var_export($e, true));
-                        flash("An error occurred", "danger");
+                        if ($e->errorInfo[1] == 1062) { // Duplicate entry error code
+                            flash("A record with the same ASIN already exists.", "warning");
+                        } else {
+                            error_log("Something broke with the query: " . var_export($e, true));
+                            flash("An error occurred", "danger");
+                        }
                     }
                 } else {
                     flash("No valid data to insert", "warning");
@@ -151,8 +167,9 @@ if (isset($_POST["action"])) {
                     "category_path",
                     "product_variations"
                 ])) {
+                    // Convert checkbox values to 1 or 0
                     if (in_array($k, ["is_best_seller", "is_amazon_choice", "is_prime", "climate_pledge_friendly"])) {
-                        $data[$k] = isset($v) ? 1 : 0;
+                        $data[$k] = isset($v) && $v === 'on' ? 1 : 0;
                     } else {
                         $data[$k] = $v;
                     }
@@ -180,12 +197,11 @@ if (isset($_POST["action"])) {
                     $value = json_encode($value);
                 }
                 if (in_array($key, ["product_price", "product_original_price", "product_price_max"]) && !is_null($value)) {
-                    $value = str_replace('$', '', $value);
-                    $value = str_replace(',', '', $value);
+                    $value = str_replace(['$', ','], '', $value);
                     $value = (float)$value;
                 }
-                if (is_bool($value)) {
-                    $value = $value ? 1 : 0;
+                if (in_array($key, ["is_best_seller", "is_amazon_choice", "is_prime", "climate_pledge_friendly"])) {
+                    $value = isset($value) && $value ? 1 : 0;
                 }
 
                 $columns[] = "`$key`";
@@ -214,7 +230,6 @@ if (isset($_POST["action"])) {
 
             if (!empty($columns)) {
                 $query = "INSERT INTO `IT202-S24-ProductDetails` (" . join(",", $columns) . ") VALUES (" . join(",", $placeholders) . ")";
-                var_export($query);
                 error_log("Query: " . $query);
                 error_log("Params: " . var_export($params, true));
 
@@ -300,6 +315,8 @@ function switchTab(target) {
     document.getElementById(target).style.display = "block";
 }
 </script>
+
+
 
 <?php
 require_once(__DIR__ . "/../../../partials/flash.php");

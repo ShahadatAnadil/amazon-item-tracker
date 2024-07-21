@@ -1,2 +1,1 @@
-ALTER TABLE `IT202-S24-ProductDetails`
-ADD COLUMN `product_original_price` DECIMAL(10, 2) NULL;
+SHOW COLUMNS FROM `IT202-S24-ProductDetails` LIKE 'is_api';
