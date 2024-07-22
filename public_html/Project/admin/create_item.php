@@ -8,13 +8,13 @@ if (!has_role("Admin")) {
     die(header("Location: $BASE_PATH" . "/home.php"));
 }
 
-
+//COMMENT FOR PULL REQUEST/CREATED create_item.php
 
 if (isset($_POST["action"])) {
     $action = $_POST["action"];
     $asin = strtoupper(se($_POST, "asin", "", false));
     $data = [];
-
+//sha38 7/21/2024
     if ($asin) {
         if ($action === "fetch") {
             $result = fetch_data($asin);
@@ -52,7 +52,7 @@ if (isset($_POST["action"])) {
                     }
                 }
 
-                // Add modified timestamp
+                // 
                 $columns[] = "`modified` = :modified";
                 $params[":modified"] = date('Y-m-d H:i:s');
 
@@ -73,7 +73,7 @@ if (isset($_POST["action"])) {
                     flash("No valid data to update", "warning");
                 }
             } else {
-                // Insert new record
+                
                 $columns = [];
                 $placeholders = [];
                 $params = [];
@@ -96,17 +96,17 @@ if (isset($_POST["action"])) {
                     }
                 }
 
-                // Ensure all required fields have values
+                
                 $requiredFields = ['is_amazon_choice', 'is_best_seller', 'is_prime', 'climate_pledge_friendly'];
                 foreach ($requiredFields as $field) {
                     if (!isset($params[":$field"])) {
                         $columns[] = "`$field`";
                         $placeholders[] = ":$field";
-                        $params[":$field"] = 0; // Default value
+                        $params[":$field"] = 0; 
                     }
                 }
 
-                // Add created and modified timestamps
+                
                 $columns[] = "`created`";
                 $placeholders[] = ":created";
                 $params[":created"] = date('Y-m-d H:i:s');
@@ -125,7 +125,7 @@ if (isset($_POST["action"])) {
                         $stmt->execute($params);
                         flash("Inserted record " . $db->lastInsertId(), "success");
                     } catch (PDOException $e) {
-                        if ($e->errorInfo[1] == 1062) { // Duplicate entry error code
+                        if ($e->errorInfo[1] == 1062) { 
                             flash("A record with the same ASIN already exists.", "warning");
                         } else {
                             error_log("Something broke with the query: " . var_export($e, true));
@@ -167,7 +167,7 @@ if (isset($_POST["action"])) {
                     "category_path",
                     "product_variations"
                 ])) {
-                    // Convert checkbox values to 1 or 0
+                    
                     if (in_array($k, ["is_best_seller", "is_amazon_choice", "is_prime", "climate_pledge_friendly"])) {
                         $data[$k] = isset($v) && $v === 'on' ? 1 : 0;
                     } else {
@@ -180,7 +180,7 @@ if (isset($_POST["action"])) {
 
             $db = getDB();
             $existingColumns = $db->query("SHOW COLUMNS FROM `IT202-S24-ProductDetails`")->fetchAll(PDO::FETCH_COLUMN);
-
+            //sha38 7/21/2024
             error_log("Existing columns: " . var_export($existingColumns, true));
 
             $columns = [];
@@ -209,7 +209,7 @@ if (isset($_POST["action"])) {
                 $params[":$key"] = $value;
             }
 
-            // Ensure all required fields have values
+           
             $requiredFields = ['is_amazon_choice', 'is_best_seller', 'is_prime', 'climate_pledge_friendly'];
             foreach ($requiredFields as $field) {
                 if (!isset($params[":$field"])) {
@@ -217,9 +217,9 @@ if (isset($_POST["action"])) {
                     $placeholders[] = ":$field";
                     $params[":$field"] = 0; // Default value
                 }
-            }
+            } 
 
-            // Add created and modified timestamps
+            
             $columns[] = "`created`";
             $placeholders[] = ":created";
             $params[":created"] = date('Y-m-d H:i:s');
@@ -272,40 +272,40 @@ if (isset($_POST["action"])) {
             <?php render_button(["text" => "Fetch Item", "type" => "submit"]); ?>
         </form>
     </div>
-
+    
     <div id="create" style="display: none;" class="tab-target">
-        <form method="post" action="">
-            <?php render_input(["type" => "text", "name" => "asin", "placeholder" => "Item ASIN", "label" => "Item ASIN", "rules" => ["required" => "required"]]); ?>
-            <?php render_input(["name" => "product_title", "placeholder" => "Product Title", "label" => "Product Title"]); ?>
-            <?php render_input(["name" => "product_price", "placeholder" => "Product Price", "label" => "Product Price"]); ?>
-            <?php render_input(["name" => "product_original_price", "placeholder" => "Original Price", "label" => "Original Price"]); ?>
-            <?php render_input(["name" => "product_price_max", "placeholder" => "Max Price", "label" => "Max Price"]); ?>
-            <?php render_input(["name" => "currency", "placeholder" => "Currency", "label" => "Currency"]); ?>
-            <?php render_input(["name" => "country", "placeholder" => "Country", "label" => "Country"]); ?>
-            <?php render_input(["name" => "product_star_rating", "placeholder" => "Star Rating", "label" => "Star Rating"]); ?>
-            <?php render_input(["name" => "product_num_ratings", "placeholder" => "Number of Ratings", "label" => "Number of Ratings"]); ?>
-            <?php render_input(["name" => "product_url", "placeholder" => "Product URL", "label" => "Product URL"]); ?>
-            <?php render_input(["name" => "product_photo", "placeholder" => "Product Photo", "label" => "Product Photo"]); ?>
-            <?php render_input(["name" => "product_num_offers", "placeholder" => "Number of Offers", "label" => "Number of Offers"]); ?>
-            <?php render_input(["name" => "product_availability", "placeholder" => "Availability", "label" => "Availability"]); ?>
-            <?php render_input(["name" => "is_best_seller", "placeholder" => "Best Seller", "label" => "Best Seller", "type" => "checkbox"]); ?>
-            <?php render_input(["name" => "is_amazon_choice", "placeholder" => "Amazon Choice", "label" => "Amazon Choice", "type" => "checkbox"]); ?>
-            <?php render_input(["name" => "is_prime", "placeholder" => "Prime", "label" => "Prime", "type" => "checkbox"]); ?>
-            <?php render_input(["name" => "climate_pledge_friendly", "placeholder" => "Climate Pledge Friendly", "label" => "Climate Pledge Friendly", "type" => "checkbox"]); ?>
-            <?php render_input(["name" => "sales_volume", "placeholder" => "Sales Volume", "label" => "Sales Volume"]); ?>
-            <?php render_input(["name" => "about_product", "placeholder" => "About Product", "label" => "About Product"]); ?>
-            <?php render_input(["name" => "product_description", "placeholder" => "Product Description", "label" => "Product Description"]); ?>
-            <?php render_input(["name" => "product_information", "placeholder" => "Product Information", "label" => "Product Information"]); ?>
-            <?php render_input(["name" => "rating_distribution", "placeholder" => "Rating Distribution", "label" => "Rating Distribution"]); ?>
-            <?php render_input(["name" => "product_photos", "placeholder" => "Product Photos", "label" => "Product Photos"]); ?>
-            <?php render_input(["name" => "product_details", "placeholder" => "Product Details", "label" => "Product Details"]); ?>
-            <?php render_input(["name" => "customers_say", "placeholder" => "Customers Say", "label" => "Customers Say"]); ?>
-            <?php render_input(["name" => "category_path", "placeholder" => "Category Path", "label" => "Category Path"]); ?>
-            <?php render_input(["name" => "product_variations", "placeholder" => "Product Variations", "label" => "Product Variations"]); ?>
-            <?php render_input(["type" => "hidden", "name" => "action", "value" => "create"]); ?>
-            <?php render_button(["text" => "Create Item", "type" => "submit"]); ?>
-        </form>
-    </div>
+    <form method="post" action=""> <!-- sha38 7/21/2024 -->
+        <?php render_input(["type" => "text", "name" => "asin", "placeholder" => "Item ASIN", "label" => "Item ASIN", "rules" => ["required" => "required"]]); ?>
+        <?php render_input(["type" => "text", "name" => "product_title", "placeholder" => "Product Title", "label" => "Product Title"]); ?>
+        <?php render_input(["type" => "number", "name" => "product_price", "placeholder" => "Product Price", "label" => "Product Price"]); ?>
+        <?php render_input(["type" => "number", "name" => "product_original_price", "placeholder" => "Original Price", "label" => "Original Price"]); ?>
+        <?php render_input(["type" => "number", "name" => "product_price_max", "placeholder" => "Max Price", "label" => "Max Price"]); ?>
+        <?php render_input(["type" => "text", "name" => "currency", "placeholder" => "Currency", "label" => "Currency"]); ?>
+        <?php render_input(["type" => "text", "name" => "country", "placeholder" => "Country", "label" => "Country"]); ?>
+        <?php render_input(["type" => "number", "name" => "product_star_rating", "placeholder" => "Star Rating", "label" => "Star Rating"]); ?>
+        <?php render_input(["type" => "number", "name" => "product_num_ratings", "placeholder" => "Number of Ratings", "label" => "Number of Ratings"]); ?>
+        <?php render_input(["type" => "url", "name" => "product_url", "placeholder" => "Product URL", "label" => "Product URL"]); ?>
+        <?php render_input(["type" => "text", "name" => "product_photo", "placeholder" => "Product Photo", "label" => "Product Photo"]); ?>
+        <?php render_input(["type" => "number", "name" => "product_num_offers", "placeholder" => "Number of Offers", "label" => "Number of Offers"]); ?>
+        <?php render_input(["type" => "text", "name" => "product_availability", "placeholder" => "Availability", "label" => "Availability"]); ?>
+        <?php render_input(["type" => "checkbox", "name" => "is_best_seller", "label" => "Best Seller"]); ?>
+        <?php render_input(["type" => "checkbox", "name" => "is_amazon_choice", "label" => "Amazon Choice"]); ?>
+        <?php render_input(["type" => "checkbox", "name" => "is_prime", "label" => "Prime"]); ?>
+        <?php render_input(["type" => "checkbox", "name" => "climate_pledge_friendly", "label" => "Climate Pledge Friendly"]); ?>
+        <?php render_input(["type" => "number", "name" => "sales_volume", "placeholder" => "Sales Volume", "label" => "Sales Volume"]); ?>
+        <?php render_input(["type" => "text", "name" => "about_product", "placeholder" => "About Product", "label" => "About Product"]); ?>
+        <?php render_input(["type" => "text", "name" => "product_description", "placeholder" => "Product Description", "label" => "Product Description"]); ?>
+        <?php render_input(["type" => "text", "name" => "product_information", "placeholder" => "Product Information", "label" => "Product Information"]); ?>
+        <?php render_input(["type" => "text", "name" => "rating_distribution", "placeholder" => "Rating Distribution", "label" => "Rating Distribution"]); ?>
+        <?php render_input(["type" => "text", "name" => "product_photos", "placeholder" => "Product Photos", "label" => "Product Photos"]); ?>
+        <?php render_input(["type" => "text", "name" => "product_details", "placeholder" => "Product Details", "label" => "Product Details"]); ?>
+        <?php render_input(["type" => "text", "name" => "customers_say", "placeholder" => "Customers Say", "label" => "Customers Say"]); ?>
+        <?php render_input(["type" => "text", "name" => "category_path", "placeholder" => "Category Path", "label" => "Category Path"]); ?>
+        <?php render_input(["type" => "text", "name" => "product_variations", "placeholder" => "Product Variations", "label" => "Product Variations"]); ?>
+        <?php render_input(["type" => "hidden", "name" => "action", "value" => "create"]); ?>
+        <?php render_button(["text" => "Create Item", "type" => "submit"]); ?>
+    </form>
+</div>
 </div>
 
 <script>
