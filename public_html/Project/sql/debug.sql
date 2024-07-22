@@ -1,0 +1,1 @@
+SHOW COLUMNS FROM `IT202-S24-ProductDetails` LIKE 'is_api';
