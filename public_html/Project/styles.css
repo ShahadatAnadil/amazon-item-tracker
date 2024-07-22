@@ -50,7 +50,7 @@ nav li a:hover {
     border: 1px solid #ddd;
 }
 
-/* Form input styling */
+/* Form input styling  sha38 7/22/2024*/
 input[type="text"], input[type="password"], input[type="email"], input[type="number"] {
     width: calc(100% - 22px);
     padding: 10px;
@@ -105,7 +105,7 @@ input[type="submit"]:hover, button:hover {
     text-decoration: underline;
 }
 
-/* Item details styling */
+/* Item details styling sha38 7/22/2024 */
 .item-details {
     background-color: #fff;
     padding: 25px;

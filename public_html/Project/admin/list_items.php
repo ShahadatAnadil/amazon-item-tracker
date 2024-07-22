@@ -22,12 +22,11 @@ $filter_price_max = isset($_GET['filter_price_max']) ? floatval($_GET['filter_pr
 $filter_rating_min = isset($_GET['filter_rating_min']) ? floatval($_GET['filter_rating_min']) : 0;
 $filter_rating_max = isset($_GET['filter_rating_max']) ? floatval($_GET['filter_rating_max']) : 5;
 
-// Validate limit
+//sha38 7/22/2024
 if ($limit < 1 || $limit > 100) {
     $limit = 10;
 }
 
-// Construct the SQL query
 $query = "SELECT * FROM `IT202-S24-ProductDetails` 
           WHERE `product_price` BETWEEN :filter_price_min AND :filter_price_max
           AND `product_star_rating` BETWEEN :filter_rating_min AND :filter_rating_max";
@@ -75,7 +74,7 @@ try {
 <div class="container">
     <h1>Product List</h1>
 
-    <!-- Filters and Sort Options -->
+    <!-- Filters and Sort Options sha38 7/21/2024-->
     <form method="GET" action="<?php echo htmlspecialchars($_SERVER['PHP_SELF']); ?>" class="filter-form">
         <div class="filter-group">
             <label for="filter_price_min">Price Min:</label>
@@ -114,7 +113,7 @@ try {
     <?php if (empty($results)): ?>
         <p>No results available.</p>
     <?php else: ?>
-        <?php foreach ($results as $item): ?>
+        <?php foreach ($results as $item): ?> <!-- sha38 7/22/2024-->
             <div class="item-summary">
                 <h2><?php echo htmlspecialchars($item['product_title']); ?></h2>
                 <p>Price: <?php echo htmlspecialchars($item['product_price']); ?> <?php echo htmlspecialchars($item['currency']); ?></p>
