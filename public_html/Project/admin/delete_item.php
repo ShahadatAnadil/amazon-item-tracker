@@ -24,7 +24,7 @@ if (!$item) {
     die(header("Location: " . get_url("admin/list_items.php")));
 }
 
-// Ensure the entity can be deleted by the user (e.g., by Admin)
+
 if (!has_role("Admin")) {
     flash("You don't have permission to delete this item", "warning");
     die(header("Location: " . get_url("admin/list_items.php")));
@@ -43,11 +43,11 @@ try {
 } catch (Exception $e) {
     error_log("Error deleting item with id $id: " . var_export($e, true));
     flash("Error deleting record", "danger");
-}
+}// sha338 7/22/2024
 
 // Redirect back to the list_items.php with filters/sorting applied
 $referer = isset($_SERVER['HTTP_REFERER']) ? $_SERVER['HTTP_REFERER'] : get_url('admin/list_items.php');
-
+//COMMENT FOR DELETE PULL REQUEST
 // Extract query parameters from the referer URL
 $query_params = parse_url($referer, PHP_URL_QUERY);
 

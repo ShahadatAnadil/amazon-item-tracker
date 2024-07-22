@@ -7,7 +7,7 @@ if (!has_role("Admin")) {
     die(header("Location: $BASE_PATH" . "/home.php"));
 }
 
-// Fetch existing item data if id is provided
+// Fetch existing item data if id is provided sha38 7/22/2024
 $item = [];
 if (isset($_GET['id'])) {
     $id = intval($_GET['id']);
@@ -25,7 +25,7 @@ if (isset($_GET['id'])) {
         flash("An error occurred while fetching the item", "danger");
     }
 }
-//COMMENT FOR THE EDIT ITEM PULL REQUEST
+
 if (isset($_POST["asin"])) {
     // Get POST data
     $asin = se($_POST, "asin", "", false);
@@ -56,67 +56,112 @@ if (isset($_POST["asin"])) {
     $category_path = se($_POST, "category_path", "", false);
     $product_variations = se($_POST, "product_variations", "", false);
 
-    $db = getDB();
-    $query = "UPDATE `IT202-S24-ProductDetails` SET
-                `asin` = :asin, `product_title` = :product_title, `product_price` = :product_price, `product_original_price` = :product_original_price, `currency` = :currency, `country` = :country, 
-                `product_star_rating` = :product_star_rating, `product_num_ratings` = :product_num_ratings, `product_url` = :product_url, `product_photo` = :product_photo, `product_num_offers` = :product_num_offers, 
-                `product_availability` = :product_availability, `is_best_seller` = :is_best_seller, `is_amazon_choice` = :is_amazon_choice, `is_prime` = :is_prime, `climate_pledge_friendly` = :climate_pledge_friendly, 
-                `sales_volume` = :sales_volume, `about_product` = :about_product, `product_description` = :product_description, `product_information` = :product_information, `rating_distribution` = :rating_distribution, 
-                `product_photos` = :product_photos, `product_details` = :product_details, `customers_say` = :customers_say, `review_aspects` = :review_aspects, `category_path` = :category_path, `product_variations` = :product_variations
-              WHERE id = :id";
+    // Server-side validation sha38 7/22/2024
+    $errors = [];
 
-    $params = [
-        ":id" => $id,
-        ":asin" => $asin,
-        ":product_title" => $product_title,
-        ":product_price" => $product_price,
-        ":product_original_price" => $product_original_price,
-        ":currency" => $currency,
-        ":country" => $country,
-        ":product_star_rating" => $product_star_rating,
-        ":product_num_ratings" => $product_num_ratings,
-        ":product_url" => $product_url,
-        ":product_photo" => $product_photo,
-        ":product_num_offers" => $product_num_offers,
-        ":product_availability" => $product_availability,
-        ":is_best_seller" => $is_best_seller,
-        ":is_amazon_choice" => $is_amazon_choice,
-        ":is_prime" => $is_prime,
-        ":climate_pledge_friendly" => $climate_pledge_friendly,
-        ":sales_volume" => $sales_volume,
-        ":about_product" => $about_product,
-        ":product_description" => $product_description,
-        ":product_information" => $product_information,
-        ":rating_distribution" => $rating_distribution,
-        ":product_photos" => $product_photos,
-        ":product_details" => $product_details,
-        ":customers_say" => $customers_say,
-        ":review_aspects" => $review_aspects,
-        ":category_path" => $category_path,
-        ":product_variations" => $product_variations
-    ];
+    if (empty($asin)) {
+        $errors[] = "ASIN is required";
+    }
+    if (empty($product_title)) {
+        $errors[] = "Product title is required";
+    }
+    if ($product_price === "" || $product_price < 0) {
+        $errors[] = "Product price must be a positive number";
+    }
+    if ($product_original_price !== "" && $product_original_price < 0) {
+        $errors[] = "Original price must be a positive number";
+    }
+    if (empty($currency)) {
+        $errors[] = "Currency is required";
+    }
+    if (empty($country)) {
+        $errors[] = "Country is required";
+    }
+    if ($product_star_rating === "" || $product_star_rating < 0 || $product_star_rating > 5) {
+        $errors[] = "Product star rating must be between 0 and 5";
+    }
+    if ($product_num_ratings === "" || $product_num_ratings < 0) {
+        $errors[] = "Number of ratings must be a positive number";
 
-    try {
-        $stmt = $db->prepare($query);
-        $stmt->execute($params);
-        flash("Updated item with id: $id", "success");
-        header("Location: " . get_url("admin/list_items.php"));
-        exit();
-    } catch (PDOException $e) {
-        error_log("Error updating item: " . var_export($e, true));
-        flash("An error occurred while updating the item", "danger");
+    }
+    if (empty($product_url)) {
+        $errors[] = "Product URL is required";
+    }
+    if (empty($product_photo)) {
+        $errors[] = "Product photo URL is required";
+    }
+    if ($product_num_offers !== "" && $product_num_offers < 0) {
+        $errors[] = "Number of offers must be a positive number";
+        
+    }
+
+    if (count($errors) === 0) {
+        $db = getDB();
+        $query = "UPDATE `IT202-S24-ProductDetails` SET
+                    `asin` = :asin, `product_title` = :product_title, `product_price` = :product_price, `product_original_price` = :product_original_price, `currency` = :currency, `country` = :country, 
+                    `product_star_rating` = :product_star_rating, `product_num_ratings` = :product_num_ratings, `product_url` = :product_url, `product_photo` = :product_photo, `product_num_offers` = :product_num_offers, 
+                    `product_availability` = :product_availability, `is_best_seller` = :is_best_seller, `is_amazon_choice` = :is_amazon_choice, `is_prime` = :is_prime, `climate_pledge_friendly` = :climate_pledge_friendly, 
+                    `sales_volume` = :sales_volume, `about_product` = :about_product, `product_description` = :product_description, `product_information` = :product_information, `rating_distribution` = :rating_distribution, 
+                    `product_photos` = :product_photos, `product_details` = :product_details, `customers_say` = :customers_say, `review_aspects` = :review_aspects, `category_path` = :category_path, `product_variations` = :product_variations
+                  WHERE id = :id";
+
+        $params = [
+            ":id" => $id,
+            ":asin" => $asin,
+            ":product_title" => $product_title,
+            ":product_price" => $product_price,
+            ":product_original_price" => $product_original_price,
+            ":currency" => $currency,
+            ":country" => $country,
+            ":product_star_rating" => $product_star_rating,
+            ":product_num_ratings" => $product_num_ratings,
+            ":product_url" => $product_url,
+            ":product_photo" => $product_photo,
+            ":product_num_offers" => $product_num_offers,
+            ":product_availability" => $product_availability,
+            ":is_best_seller" => $is_best_seller,
+            ":is_amazon_choice" => $is_amazon_choice,
+            ":is_prime" => $is_prime,
+            ":climate_pledge_friendly" => $climate_pledge_friendly,
+            ":sales_volume" => $sales_volume,
+            ":about_product" => $about_product,
+            ":product_description" => $product_description,
+            ":product_information" => $product_information,
+            ":rating_distribution" => $rating_distribution,
+            ":product_photos" => $product_photos,
+            ":product_details" => $product_details,
+            ":customers_say" => $customers_say,
+            ":review_aspects" => $review_aspects,
+            ":category_path" => $category_path,
+            ":product_variations" => $product_variations
+        ];
+
+        try {
+            $stmt = $db->prepare($query);
+            $stmt->execute($params);
+            flash("Updated item with id: $id", "success");
+            header("Location: " . get_url("admin/list_items.php"));
+            exit();
+        } catch (PDOException $e) {
+            error_log("Error updating item: " . var_export($e, true));
+            flash("An error occurred while updating the item", "danger");
+        }
+    } else {
+        foreach ($errors as $error) {
+            flash($error, "warning");
+        }
     }
 }
-
+//sha38 7/22/2024
 $form = [
     ["type" => "text", "name" => "asin", "placeholder" => "Item ASIN", "label" => "Item ASIN", "value" => $item['asin'] ?? "", "rules" => ["required" => "required"]],
     ["type" => "text", "name" => "product_title", "placeholder" => "Product Title", "label" => "Product Title", "value" => $item['product_title'] ?? "", "rules" => ["required" => "required"]],
-    ["type" => "number", "name" => "product_price", "placeholder" => "Product Price", "label" => "Product Price", "value" => $item['product_price'] ?? "", "rules" => ["required" => "required", "min" => "0"]],
-    ["type" => "number", "name" => "product_original_price", "placeholder" => "Original Price", "label" => "Original Price", "value" => $item['product_original_price'] ?? "", "rules" => ["min" => "0"]],
+    ["type" => "number", "name" => "product_price", "placeholder" => "Product Price", "label" => "Product Price", "value" => $item['product_price'] ?? "", "rules" => ["min" => "0"]],
+    ["type" => "number", "name" => "product_original_price", "placeholder" => "Product Original Price", "label" => "Product Original Price", "value" => $item['product_original_price'] ?? ""],
     ["type" => "text", "name" => "currency", "placeholder" => "Currency", "label" => "Currency", "value" => $item['currency'] ?? "", "rules" => ["required" => "required"]],
     ["type" => "text", "name" => "country", "placeholder" => "Country", "label" => "Country", "value" => $item['country'] ?? "", "rules" => ["required" => "required"]],
-    ["type" => "number", "name" => "product_star_rating", "placeholder" => "Product Star Rating", "label" => "Product Star Rating", "value" => $item['product_star_rating'] ?? "", "rules" => ["required" => "required", "min" => "0", "max" => "5", "step" => "0.1"]],
-    ["type" => "number", "name" => "product_num_ratings", "placeholder" => "Number of Ratings", "label" => "Number of Ratings", "value" => $item['product_num_ratings'] ?? "", "rules" => ["required" => "required", "min" => "0"]],
+    ["type" => "number", "name" => "product_star_rating", "placeholder" => "Product Star Rating", "label" => "Product Star Rating", "value" => $item['product_star_rating'] ?? "", "rules" => ["min" => "0", "max" => "5"]],
+    ["type" => "number", "name" => "product_num_ratings", "placeholder" => "Number of Ratings", "label" => "Number of Ratings", "value" => $item['product_num_ratings'] ?? "", "rules" => ["min" => "0"]],
     ["type" => "url", "name" => "product_url", "placeholder" => "Product URL", "label" => "Product URL", "value" => $item['product_url'] ?? "", "rules" => ["required" => "required"]],
     ["type" => "url", "name" => "product_photo", "placeholder" => "Product Photo", "label" => "Product Photo", "value" => $item['product_photo'] ?? "", "rules" => ["required" => "required"]],
     ["type" => "number", "name" => "product_num_offers", "placeholder" => "Number of Offers", "label" => "Number of Offers", "value" => $item['product_num_offers'] ?? "", "rules" => ["min" => "0"]],
