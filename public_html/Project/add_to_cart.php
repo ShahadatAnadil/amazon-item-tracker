@@ -9,7 +9,7 @@ if (isset($_GET['item_id'])) {
     $item_id = intval($_GET['item_id']);
     
     $db = getDB();
-    
+    // COMMENT FOR HANDLING API DATA ASSOCIATION PULL REQUEST
     // Check if the item exists in IT202-S24-ProductDetails
     $itemCheckQuery = "SELECT id FROM `IT202-S24-ProductDetails` WHERE id = :item_id";
     $itemCheckStmt = $db->prepare($itemCheckQuery);

@@ -6,7 +6,7 @@ if (!isset($_SESSION['user'])) {
     flash("You must be logged in to view this page", "warning");
     die(header("Location: $BASE_PATH/login.php"));
 }
-
+// COMMENT FOR HANDLING API DATA ASSOCIATION PULL REQUEST
 $user_id = $_SESSION['user']['id'];
 $query = "SELECT p.* FROM user_favorites f 
           JOIN `IT202-S24-ProductDetails` p ON f.item_id = p.id 
