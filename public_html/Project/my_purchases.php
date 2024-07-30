@@ -8,7 +8,7 @@ if (!isset($_SESSION['user'])) {
 
 $user_id = $_SESSION['user']['id'];
 $db = getDB();
-
+// COMMENT FOR HANDLING API DATA ASSOCIATION PULL REQUEST
 $order_id_filter = isset($_GET['order_id_filter']) ? intval($_GET['order_id_filter']) : null;
 
 $query = "SELECT o.id AS order_id, o.total_price, o.created, oi.item_id, oi.quantity, oi.unit_price, p.product_title

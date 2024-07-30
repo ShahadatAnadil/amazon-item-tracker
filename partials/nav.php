@@ -23,7 +23,16 @@ if (($localWorks && $domain == "localhost") || $domain != "localhost") {
 }
 
 if (session_status() == PHP_SESSION_NONE) {
-    session_start();
+    // Set session cookie parameters
+    session_set_cookie_params([
+        'lifetime' => 0,  // Session cookie duration, 0 means until the browser is closed
+        'path' => '/',    // Path where the cookie is valid
+        'domain' => $_SERVER['HTTP_HOST'],  // The domain where the cookie is valid
+        'secure' => isset($_SERVER['HTTPS']),  // If true, the cookie will only be set if a secure HTTPS connection exists
+        'httponly' => true,  // If true, the cookie will be accessible only through the HTTP protocol
+        'samesite' => 'Lax'  // Helps mitigate CSRF attacks
+    ]);
+    session_start();  // Start the session
 }
 ?>
 

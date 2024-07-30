@@ -27,7 +27,7 @@ try {
     $total_pages = 1;
     $current_page = 1;
 }
-
+// COMMENT FOR HANDLING API DATA ASSOCIATION PULL REQUEST
 $query = "SELECT uc.id, p.product_title, p.product_price, p.currency, uc.quantity, p.id AS product_id, p.product_photo
           FROM user_cart uc
           JOIN `IT202-S24-ProductDetails` p ON uc.item_id = p.id
