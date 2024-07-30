@@ -291,3 +291,22 @@ input[type="submit"]:hover, button:hover {
     color: #333;
 }
 
+.btn-link {
+    border: none;
+    background: none;
+    padding: 0;
+    cursor: pointer;
+    color: #d3d3d3; /* Default color for not favorited */
+}
+
+.btn-link.favorited {
+    color: #ff0000; /* Color for favorited */
+}
+
+.btn-link .fas.fa-heart {
+    font-size: 1.5em; /* Adjust the size of the heart */
+}
+
+.btn-link:hover .fas.fa-heart {
+    color: #ff0000; /* Color on hover */
+}
