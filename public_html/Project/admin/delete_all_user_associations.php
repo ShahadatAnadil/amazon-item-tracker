@@ -6,6 +6,7 @@ if (!has_role("Admin")) {
     die(header("Location: $BASE_PATH/home.php"));
 }
 
+//COMMENT FOR ASSOCIATING ANY ENTITY WITH ANY USER PULL REQUEST 
 $db = getDB();
 
 try {
