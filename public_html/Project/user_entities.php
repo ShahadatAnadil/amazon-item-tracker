@@ -170,13 +170,13 @@ function toggleFavorite(itemId) {
 
 function deleteAssociation(itemId) {
     if (confirm("Are you sure you want to delete this association?")) {
-        window.location.href = `delete_association.php?id=${itemId}`;
+        window.location.href = `admin/delete_association.php?id=${itemId}`;
     }
 }
 
 function removeAllAssociations() {
     if (confirm("Are you sure you want to remove all associations?")) {
-        window.location.href = `delete_all_associations.php?user_id=<?php echo $user_id; ?>`;
+        window.location.href = `admin/delete_all_associations.php?user_id=<?php echo $user_id; ?>`;
     }
 }
 </script>

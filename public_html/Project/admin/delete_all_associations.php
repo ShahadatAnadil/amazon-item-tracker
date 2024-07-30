@@ -24,5 +24,6 @@ try {
     flash("Error deleting associations", "danger");
 }
 
-die(header("Location: " . get_url('admin/all_associations.php')));
+header("Location: " . get_url('/Project/admin/all_associations.php'));
+die();
 ?>
