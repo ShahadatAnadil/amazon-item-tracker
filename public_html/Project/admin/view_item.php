@@ -15,7 +15,7 @@ if (!has_role("Admin")) {
     die(header("Location: " . get_url('public_list_items.php')));
 }
 
-// Fetch item details from the database sha38 7/22/2024
+// Fetch item details from the database
 $item_id = isset($_GET['id']) ? intval($_GET['id']) : 0;
 $query = "SELECT * FROM `IT202-S24-ProductDetails` WHERE id = :id";
 $db = getDB();
@@ -45,7 +45,7 @@ function format_json($json) {
         return $json; // Return as is if decoding fails
     }
 }
-//COMMENT TO CREATE A PULL REQUEST FOR LIST ITEMS
+
 // Decode JSON fields
 $about_product = format_json($result['about_product']);
 $description = $result['product_description'];
@@ -58,7 +58,7 @@ $category_path = format_json($result['category_path']);
 $product_variations = format_json($result['product_variations']);
 ?>
 
-<div class="container"> <!-- sha38 7/22/2024 -->
+<div class="container">
     <div class="item-header">
         <h1><?php echo htmlspecialchars($result['product_title']); ?></h1>
         <p class="item-price">Price: <span><?php echo htmlspecialchars($result['product_price']); ?> <?php echo htmlspecialchars($result['currency']); ?></span></p>
