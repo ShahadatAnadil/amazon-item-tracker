@@ -5,7 +5,7 @@ if (!has_role("Admin")) {
     flash("You don't have permission to view this page", "warning");
     die(header("Location: $BASE_PATH/login.php"));
 }
-
+//COMMENT FOR ALL USER ASSOCIATIONS PULL REQUEST
 $search_username = isset($_GET['search_username']) ? trim($_GET['search_username']) : '';
 $limit = isset($_GET['limit']) ? intval($_GET['limit']) : 10;
 $offset = isset($_GET['offset']) ? intval($_GET['offset']) : 0;
