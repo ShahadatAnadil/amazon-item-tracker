@@ -111,6 +111,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['remove_favorite_id'])
         flash("Unhandled error occurred", "danger");
     }
 }
+// COMMENT FOR HANDLING API DATA ASSOCIATION PULL REQUEST
 
 $total_pages = ceil($total_items / $limit);
 $current_page = floor($offset / $limit) + 1;
