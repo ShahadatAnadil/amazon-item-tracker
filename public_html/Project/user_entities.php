@@ -120,7 +120,7 @@ try {
                             <p class="card-text">Price: <?php echo htmlspecialchars($item['product_price']); ?> <?php echo htmlspecialchars($item['currency']); ?></p>
                             <p class="card-text">Rating: <?php echo htmlspecialchars($item['product_star_rating']); ?> (<?php echo htmlspecialchars($item['product_num_ratings']); ?> ratings)</p>
                             <div class="d-flex justify-content-between">
-                                <a href="<?php echo get_url('Project/item.php?id=' . urlencode($item['id'])); ?>" class="btn btn-primary">View</a>
+                                <a href="<?php echo get_url('item.php?id=' . urlencode($item['id'])); ?>" class="btn btn-primary">View</a>
                                 <button class="btn btn-link <?php echo $item['is_favorited'] ? 'favorited' : ''; ?>" onclick="toggleFavorite(<?php echo $item['id']; ?>)">
                                     <i class="fas fa-heart"></i>
                                 </button>
