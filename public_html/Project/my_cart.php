@@ -12,7 +12,7 @@ $db = getDB();
 $limit = isset($_GET['limit']) ? intval($_GET['limit']) : 10;
 $offset = isset($_GET['offset']) ? intval($_GET['offset']) : 0;
 
-// Get the total number of items in the cart
+
 $stmt = $db->prepare("SELECT COUNT(*) as total FROM user_cart WHERE user_id = :user_id");
 $stmt->bindValue(':user_id', $user_id, PDO::PARAM_INT);
 try {
@@ -121,7 +121,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             </table>
             <button type="submit" name="checkout" class="btn btn-success">Checkout</button>
         </form>
-        <!-- Pagination (if needed) -->
+        
         <div class="d-flex justify-content-between align-items-center mt-3">
             <a href="?<?php echo http_build_query(array_merge($_GET, ['offset' => max(0, $offset - $limit)])); ?>" class="btn btn-outline-primary <?php echo $current_page == 1 ? 'disabled' : ''; ?>">Previous</a>
             <span>Page <?php echo $current_page; ?> of <?php echo $total_pages; ?></span>

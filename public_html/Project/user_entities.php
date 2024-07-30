@@ -3,23 +3,23 @@ require(__DIR__ . "/../../partials/nav.php");
 
 if (!isset($_SESSION['user'])) {
     flash("You must be logged in to view this page", "warning");
-    die(header("Location: $BASE_PATH/login.php"));
+    die(header("Location: " . get_url('login.php')));
 }
 
 $user_id = $_SESSION['user']['id'];
 
-// Set default values for filters and sorting
+
 $limit = isset($_GET['limit']) ? intval($_GET['limit']) : 10;
 $offset = isset($_GET['offset']) ? intval($_GET['offset']) : 0;
 $sort_by = isset($_GET['sort_by']) ? $_GET['sort_by'] : 'product_title';
 $search_title = isset($_GET['search_title']) ? trim($_GET['search_title']) : '';
 
-// Ensure limit is within allowed range
+
 if ($limit < 1 || $limit > 100) {
     $limit = 10;
 }
 
-// Build the query with optional filters and sorting
+
 $query = "SELECT p.*, 
                  IF(f.user_id IS NULL, 0, 1) as is_favorited
           FROM `IT202-S24-ProductDetails` p
@@ -170,7 +170,7 @@ function toggleFavorite(itemId) {
 
 function deleteAssociation(itemId) {
     if (confirm("Are you sure you want to delete this association?")) {
-        window.location.href = `admin/delete_association.php?id=${itemId}`;
+        window.location.href = `admin/delete_associations.php?item_id=${itemId}&user_id=<?php echo $user_id; ?>`;
     }
 }
 

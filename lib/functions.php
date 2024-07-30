@@ -24,15 +24,15 @@ if (!function_exists('get_url')) {
     function get_url($dest) {
         global $BASE_PATH;
         if (str_starts_with($dest, "/")) {
-            // handle absolute path
+            
             return "$BASE_PATH$dest";
         }
-        // handle relative path
+        
         return "$BASE_PATH/$dest";
     }
 }
 
-// Helper function to check if a user is logged in
+
 if (!function_exists('is_logged_in')) {
     function is_logged_in($redirect = false, $destination = "login.php")
     {
@@ -45,7 +45,7 @@ if (!function_exists('is_logged_in')) {
     }
 }
 
-// Helper function to get user ID
+
 if (!function_exists('get_user_id')) {
     function get_user_id()
     {
@@ -56,7 +56,7 @@ if (!function_exists('get_user_id')) {
     }
 }
 
-// Helper function to get username
+
 if (!function_exists('get_username')) {
     function get_username()
     {
@@ -67,7 +67,7 @@ if (!function_exists('get_username')) {
     }
 }
 
-// Helper function to get user email
+
 if (!function_exists('get_user_email')) {
     function get_user_email()
     {
@@ -85,12 +85,12 @@ function process_purchase($user_id, $items) {
     try {
         $db->beginTransaction();
 
-        // Insert order into the Orders table
+       
         $stmt = $db->prepare("INSERT INTO Orders (user_id, total_price, created) VALUES (:user_id, 0, NOW())");
         $stmt->execute([":user_id" => $user_id]);
         $order_id = $db->lastInsertId();
 
-        // Insert items into OrderItems table and calculate total price
+        
         $total_price = 0;
         foreach ($items as $item) {
             $stmt = $db->prepare("INSERT INTO OrderItems (order_id, item_id, quantity, unit_price) VALUES (:order_id, :item_id, :quantity, :unit_price)");
@@ -103,7 +103,7 @@ function process_purchase($user_id, $items) {
             $total_price += $item['quantity'] * $item['price'];
         }
 
-        // Update the total price in the Orders table
+        
         $stmt = $db->prepare("UPDATE Orders SET total_price = :total_price WHERE id = :order_id");
         $stmt->execute([
             ":total_price" => $total_price,

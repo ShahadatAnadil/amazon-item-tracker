@@ -10,14 +10,14 @@ if (isset($_GET['item_id'])) {
     
     $db = getDB();
     // COMMENT FOR HANDLING API DATA ASSOCIATION PULL REQUEST
-    // Check if the item exists in IT202-S24-ProductDetails
+    
     $itemCheckQuery = "SELECT id FROM `IT202-S24-ProductDetails` WHERE id = :item_id";
     $itemCheckStmt = $db->prepare($itemCheckQuery);
     $itemCheckStmt->bindValue(':item_id', $item_id, PDO::PARAM_INT);
     $itemCheckStmt->execute();
     $itemExists = $itemCheckStmt->fetch(PDO::FETCH_ASSOC);
 
-    // Check if the user exists in Users table
+    
     $userCheckQuery = "SELECT id FROM `Users` WHERE id = :user_id";
     $userCheckStmt = $db->prepare($userCheckQuery);
     $userCheckStmt->bindValue(':user_id', $user_id, PDO::PARAM_INT);
@@ -25,7 +25,7 @@ if (isset($_GET['item_id'])) {
     $userExists = $userCheckStmt->fetch(PDO::FETCH_ASSOC);
 
     if ($itemExists && $userExists) {
-        // Add to cart
+        
         $query = "INSERT INTO user_cart (user_id, item_id, quantity) VALUES (:user_id, :item_id, 1)";
         $stmt = $db->prepare($query);
         $stmt->bindValue(':user_id', $user_id, PDO::PARAM_INT);

@@ -7,32 +7,32 @@ require(__DIR__ . "/../../partials/nav.php");
 require_once(__DIR__ . "/../../lib/render_functions.php");
 require_once(__DIR__ . "/../../lib/item_api.php");
 
-// Check if the user is logged in
+
 if (!isset($_SESSION['user'])) {
     flash("You must be logged in to view this page.", "warning");
-    header("Location: " . get_url('login.php')); // Redirect to login page
+    header("Location: " . get_url('login.php')); 
     exit;
 }
 
-// Get the item ID from the query string
+
 $id = isset($_GET['id']) ? (int)$_GET['id'] : 0;
 if ($id <= 0) {
     echo 'Invalid item ID.';
     exit;
 }
 
-// Initialize database connection
+
 $db = getDB();
 
 try {
-    // Prepare and execute the SQL query
+    
     $stmt = $db->prepare("SELECT * FROM `IT202-S24-ProductDetails` WHERE id = :id");
     $stmt->bindValue(':id', $id, PDO::PARAM_INT);
     $stmt->execute();
     $item = $stmt->fetch(PDO::FETCH_ASSOC);
 
     if ($item) {
-        // Display item details
+        
         echo '<div class="item-details">';
         echo '<h1>' . htmlspecialchars($item['product_title'] ?? 'No Title') . '</h1>';
         echo '<p><strong>ASIN:</strong> ' . htmlspecialchars($item['asin'] ?? 'N/A') . '</p>';
@@ -51,7 +51,7 @@ try {
         echo '<p><strong>Climate Pledge Friendly:</strong> ' . ($item['climate_pledge_friendly'] ? 'Yes' : 'No') . '</p>';
         echo '<p><strong>Sales Volume:</strong> ' . htmlspecialchars($item['sales_volume'] ?? 'N/A') . '</p>';
 
-        // Decode and display the "About Product" field
+        
         if (!empty($item['about_product'])) {
             $aboutProduct = json_decode($item['about_product'], true);
             if (json_last_error() === JSON_ERROR_NONE && is_array($aboutProduct)) {
@@ -68,7 +68,7 @@ try {
 
         echo '<p><strong>Description:</strong> ' . htmlspecialchars($item['product_description'] ?? 'N/A') . '</p>';
 
-        // Decode and display the "Information" field
+       
         if (!empty($item['product_information'])) {
             $productInformation = json_decode($item['product_information'], true);
             if (json_last_error() === JSON_ERROR_NONE && is_array($productInformation)) {
@@ -83,7 +83,7 @@ try {
             }
         }
 
-        // Decode and display the "Rating Distribution" field
+        
         if (!empty($item['rating_distribution'])) {
             $ratingDistribution = json_decode($item['rating_distribution'], true);
             if (json_last_error() === JSON_ERROR_NONE && is_array($ratingDistribution)) {
@@ -96,7 +96,7 @@ try {
             }
         }
 
-        // Decode and display the product photos
+        
         if (!empty($item['product_photos'])) {
             $photos = json_decode($item['product_photos'], true);
             if (json_last_error() === JSON_ERROR_NONE) {
@@ -109,7 +109,7 @@ try {
             }
         }
 
-        // Decode and display product details
+        
         if (!empty($item['product_details'])) {
             $details = json_decode($item['product_details'], true);
             if (json_last_error() === JSON_ERROR_NONE) {
@@ -122,7 +122,7 @@ try {
             }
         }
 
-        // Decode and display customer reviews
+        
         if (!empty($item['customers_say'])) {
             $reviews = json_decode($item['customers_say'], true);
             if (json_last_error() === JSON_ERROR_NONE) {
@@ -135,7 +135,7 @@ try {
             }
         }
 
-        // Decode and display product variations
+        
         if (!empty($item['product_variations'])) {
             $variations = json_decode($item['product_variations'], true);
             if (json_last_error() === JSON_ERROR_NONE) {

@@ -10,7 +10,7 @@ if (!isset($_SESSION['user'])) {
 
 $user_id = $_SESSION['user']['id'];
 
-// Set default values for filters and sorting
+
 $limit = isset($_GET['limit']) ? intval($_GET['limit']) : 10;
 $offset = isset($_GET['offset']) ? intval($_GET['offset']) : 0;
 $sort_by = isset($_GET['sort_by']) ? $_GET['sort_by'] : 'product_title';
@@ -20,12 +20,12 @@ $filter_rating_min = isset($_GET['filter_rating_min']) ? floatval($_GET['filter_
 $filter_rating_max = isset($_GET['filter_rating_max']) ? floatval($_GET['filter_rating_max']) : 5;
 $search_title = isset($_GET['search_title']) ? trim($_GET['search_title']) : '';
 
-// Ensure limit is within allowed range
+
 if ($limit < 1 || $limit > 100) {
     $limit = 10;
 }
 
-// Build the query with optional filters and sorting
+
 $query = "SELECT p.*, 
                  IF(f.user_id IS NULL, 0, 1) as is_favorited
           FROM `IT202-S24-ProductDetails` p
@@ -77,7 +77,7 @@ try {
     $stmt->execute();
     $results = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
-    // Get the total number of items
+    
     $stmt = $db->prepare("SELECT COUNT(*) as total FROM `IT202-S24-ProductDetails` p
                           WHERE p.`product_price` BETWEEN :filter_price_min AND :filter_price_max
                           AND p.`product_star_rating` BETWEEN :filter_rating_min AND :filter_rating_max");
@@ -102,7 +102,7 @@ try {
 <div class="container">
     <h1>Product List</h1>
 
-    <!-- Filters and Sort Options -->
+    
     <form method="GET" action="<?php echo htmlspecialchars($_SERVER['PHP_SELF']); ?>" class="filter-form mb-4">
         <div class="row mb-3">
             <div class="col-md-3">
@@ -172,7 +172,7 @@ try {
         <?php endif; ?>
     </div>
 
-    <!-- Pagination (if needed) -->
+    
     <div class="d-flex justify-content-between align-items-center">
         <a href="?<?php echo http_build_query(array_merge($_GET, ['offset' => max(0, $offset - $limit)])); ?>" class="btn btn-outline-primary <?php echo $current_page == 1 ? 'disabled' : ''; ?>">Previous</a>
         <span>Page <?php echo $current_page; ?> of <?php echo $total_pages; ?></span>
@@ -180,7 +180,7 @@ try {
     </div>
 </div>
 
-<!-- Notification Container -->
+
 <div id="notification" class="notification"></div>
 
 <script>

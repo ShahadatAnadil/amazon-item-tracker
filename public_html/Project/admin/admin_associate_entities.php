@@ -48,7 +48,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 <div class="container">
     <h1>Admin Associate Entities with Users</h1>
 
-    <!-- Search Form -->
+    
     <form method="GET" action="<?php echo htmlspecialchars($_SERVER['PHP_SELF']); ?>" class="mb-4">
         <div class="row mb-3">
             <div class="col-md-6">
