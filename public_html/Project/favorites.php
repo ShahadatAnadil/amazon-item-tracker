@@ -9,7 +9,7 @@ if (!isset($_SESSION['user'])) {
 $user_id = $_SESSION['user']['id'];
 $db = getDB();
 
-// Set default values for filters and sorting
+
 $limit = isset($_GET['limit']) ? intval($_GET['limit']) : 10;
 $offset = isset($_GET['offset']) ? intval($_GET['offset']) : 0;
 $sort_by = isset($_GET['sort_by']) ? $_GET['sort_by'] : 'product_title';
@@ -19,7 +19,7 @@ $filter_rating_min = isset($_GET['filter_rating_min']) ? floatval($_GET['filter_
 $filter_rating_max = isset($_GET['filter_rating_max']) ? floatval($_GET['filter_rating_max']) : 5;
 $search_title = isset($_GET['search_title']) ? trim($_GET['search_title']) : '';
 
-// Build the query with optional filters and sorting
+
 $query = "SELECT uf.id, p.id as product_id, p.product_title, p.product_price, p.currency, p.product_star_rating, p.product_photo
           FROM user_favorites uf
           JOIN `IT202-S24-ProductDetails` p ON uf.item_id = p.id

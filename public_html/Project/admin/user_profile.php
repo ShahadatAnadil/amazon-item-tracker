@@ -14,7 +14,7 @@ if ($user_id < 1) {
 
 $db = getDB();
 
-// Fetch user details
+
 $query = "SELECT * FROM Users WHERE id = :id";
 $stmt = $db->prepare($query);
 $stmt->execute([":id" => $user_id]);

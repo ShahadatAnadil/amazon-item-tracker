@@ -3,19 +3,19 @@ require(__DIR__ . "/../../../partials/nav.php");
 require_once(__DIR__ . "/../../../lib/render_functions.php");
 require_once(__DIR__ . "/../../../lib/item_api.php");
 
-// Ensure the user is logged in to access this page
+
 if (!isset($_SESSION['user'])) {
     flash("You must be logged in to view this page", "warning");
     die(header("Location: " . get_url('login.php')));
 }
 
-// Ensure the user is an Admin to access editing and deleting options
+
 if (!has_role("Admin")) {
     flash("You don't have permission to view this item", "warning");
     die(header("Location: " . get_url('public_list_items.php')));
 }
 
-// Fetch item details from the database
+
 $item_id = isset($_GET['id']) ? intval($_GET['id']) : 0;
 $query = "SELECT * FROM `IT202-S24-ProductDetails` WHERE id = :id";
 $db = getDB();
@@ -36,17 +36,17 @@ if (!$result) {
     die(header("Location: " . get_url('public_list_items.php')));
 }
 
-// Function to format JSON data
+
 function format_json($json) {
     $data = json_decode($json, true);
     if (json_last_error() === JSON_ERROR_NONE) {
         return $data;
     } else {
-        return $json; // Return as is if decoding fails
+        return $json; 
     }
 }
 
-// Decode JSON fields
+
 $about_product = format_json($result['about_product']);
 $description = $result['product_description'];
 $information = format_json($result['product_information']);

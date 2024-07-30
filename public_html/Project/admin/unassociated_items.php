@@ -6,18 +6,18 @@ if (!has_role("Admin")) {
     die(header("Location: $BASE_PATH/login.php"));
 }
 
-// Set default values for filters and sorting
+
 $limit = isset($_GET['limit']) ? intval($_GET['limit']) : 10;
 $offset = isset($_GET['offset']) ? intval($_GET['offset']) : 0;
 $sort_by = isset($_GET['sort_by']) ? $_GET['sort_by'] : 'product_title';
 $search_title = isset($_GET['search_title']) ? trim($_GET['search_title']) : '';
 
-// Ensure limit is within allowed range
+
 if ($limit < 1 || $limit > 100) {
     $limit = 10;
 }
 
-// Build the query with optional filters and sorting
+
 $query = "SELECT p.*
           FROM `IT202-S24-ProductDetails` p
           LEFT JOIN `user_favorites` f ON p.id = f.item_id
@@ -56,7 +56,7 @@ try {
     $stmt->execute();
     $results = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
-    // Get the total number of items
+    
     $stmt = $db->prepare("SELECT COUNT(*) as total FROM `IT202-S24-ProductDetails` p
                           LEFT JOIN `user_favorites` f ON p.id = f.item_id
                           WHERE f.user_id IS NULL");
@@ -126,7 +126,7 @@ try {
         <?php endif; ?>
     </div>
 
-    <!-- Pagination (if needed) -->
+    
     <div class="d-flex justify-content-between align-items-center">
         <a href="?<?php echo http_build_query(array_merge($_GET, ['offset' => max(0, $offset - $limit)])); ?>" class="btn btn-outline-primary <?php echo $current_page == 1 ? 'disabled' : ''; ?>">Previous</a>
         <span>Page <?php echo $current_page; ?> of <?php echo $total_pages; ?></span>

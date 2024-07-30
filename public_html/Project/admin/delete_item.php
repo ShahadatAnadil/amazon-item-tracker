@@ -6,20 +6,20 @@ require_once(__DIR__ . "/../../../lib/render_functions.php");
 
 error_log("Current script path: " . __FILE__);
 
-// Ensure the user has the Admin role
+
 if (!has_role("Admin")) {
     flash("You don't have permission to view this page", "warning");
     die(header("Location: " . get_url("home.php")));
 }
 
-// Fetch the ID from the URL query parameters
+
 $id = se($_GET, "id", -1, false);
 if ($id < 1) {
     flash("Invalid ID passed to delete", "danger");
     die(header("Location: " . get_url("admin/list_items.php")));
 }
 
-// Fetch the item from the database
+
 $db = getDB();
 $query = "SELECT * FROM `IT202-S24-ProductDetails` WHERE id = :id";
 $stmt = $db->prepare($query);
@@ -34,7 +34,7 @@ if (!$item) {
 try {
     $db->beginTransaction();
     
-    // Delete related records from other tables
+    
     $deleteFavoritesQuery = "DELETE FROM user_favorites WHERE item_id = :id";
     $stmt = $db->prepare($deleteFavoritesQuery);
     $stmt->execute([":id" => $id]);
@@ -43,7 +43,7 @@ try {
     $stmt = $db->prepare($deleteOrderItemsQuery);
     $stmt->execute([":id" => $id]);
 
-    // Perform the deletion from the main table
+    
     $query = "DELETE FROM `IT202-S24-ProductDetails` WHERE id = :id";
     $stmt = $db->prepare($query);
     $stmt->execute([":id" => $id]);
@@ -61,7 +61,7 @@ try {
     flash("Error deleting record", "danger");
 }
 
-// Redirect back to the previous page with filters/sorting applied
+
 $referer = isset($_SERVER['HTTP_REFERER']) ? $_SERVER['HTTP_REFERER'] : get_url('admin/list_items.php');
 $query_params = parse_url($referer, PHP_URL_QUERY);
 

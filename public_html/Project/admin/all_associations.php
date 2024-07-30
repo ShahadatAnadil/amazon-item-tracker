@@ -17,7 +17,7 @@ if ($limit < 1 || $limit > 100) {
 
 $db = getDB();
 
-// Build the query for associations
+
 $query = "SELECT p.*, 
                  u.id AS user_id, 
                  u.username, 
@@ -96,7 +96,7 @@ try {
     <h1>All User Associations</h1>
     <p>Showing <?php echo count($results); ?> out of <?php echo htmlspecialchars($total_items ?? ''); ?> items:</p>
 
-    <!-- Filters and Sort Options -->
+    
     <form method="GET" action="<?php echo get_url('admin/all_associations.php'); ?>" class="filter-form mb-4">
         <div class="row mb-3">
             <div class="col-md-3">
@@ -153,7 +153,7 @@ try {
         <a href="<?php echo get_url('admin/all_associations.php?' . http_build_query(array_merge($_GET, ['offset' => $offset + $limit]))); ?>" class="btn btn-outline-primary <?php echo $current_page == $total_pages ? 'disabled' : ''; ?>">Next</a>
     </div>
 
-    <!-- Delete All Associations Button -->
+   
     <div class="mt-4">
         <a href="<?php echo get_url('admin/delete_all_user_associations.php'); ?>" class="btn btn-danger" onclick="return confirm('Are you sure you want to delete all associations for all users?');">Delete All Associations</a>
     </div>

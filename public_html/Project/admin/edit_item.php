@@ -7,7 +7,7 @@ if (!has_role("Admin")) {
     die(header("Location: $BASE_PATH/home.php"));
 }
 
-// Fetch existing item data if id is provided
+
 $item = [];
 if (isset($_GET['id'])) {
     $id = intval($_GET['id']);
@@ -76,7 +76,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         }
     }
 
-    // Provide default values for fields that cannot be null
+    
     $default_values = [
         'product_original_price' => 0,
         'product_num_ratings' => 0,
@@ -101,7 +101,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         }
     }
 
-    // Check for ASIN uniqueness
+    
     $db = getDB();
     $stmt = $db->prepare("SELECT id FROM `IT202-S24-ProductDetails` WHERE asin = :asin AND id != :id");
     $stmt->execute([":asin" => $data['asin'], ":id" => $id]);

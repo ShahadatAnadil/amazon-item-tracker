@@ -2,7 +2,6 @@
 require(__DIR__ . "/../../partials/nav.php");
 ?>
 
-<!-- Add a Hero Section -->
 <div class="container-fluid hero-section text-center text-dark" style="background: url('path/to/your/background-image.jpg') no-repeat center center/cover; height: 80vh;">
     <div class="hero-content d-flex align-items-center justify-content-center h-100">
         <div>
@@ -14,7 +13,7 @@ require(__DIR__ . "/../../partials/nav.php");
 </div>
 
 <div class="container mt-5">
-    <!-- About Section -->
+    
     <div class="row mb-5">
         <div class="col-md-6">
             <h2>About Us</h2>
@@ -25,7 +24,7 @@ require(__DIR__ . "/../../partials/nav.php");
         </div>
     </div>
 
-    <!-- Features Section -->
+    
     <div class="row text-center mb-5">
         <h2 class="mb-4">Our Features</h2>
         <div class="col-md-4">
@@ -51,7 +50,7 @@ require(__DIR__ . "/../../partials/nav.php");
         </div>
     </div>
 
-    <!-- Latest Items Section -->
+    
     <div class="row mb-5">
         <h2 class="mb-4">Latest Items</h2>
         <?php
@@ -84,16 +83,16 @@ require(__DIR__ . "/../../partials/nav.php");
 
 <?php
 if (is_logged_in(true)) {
-    // Comment this out if you don't want to see the session variables
+    
     error_log("Session data: " . var_export($_SESSION, true));
 }
 require(__DIR__ . "/../../partials/flash.php");
 ?>
 
-<!-- Add your custom CSS -->
+
 <style>
 .hero-section {
-    color: #000; /* Change text color to black */
+    color: #000; 
     background: url('path/to/your/hero-image.jpg') no-repeat center center/cover;
     height: 70vh;
     display: flex;
