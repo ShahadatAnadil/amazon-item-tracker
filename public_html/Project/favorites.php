@@ -175,7 +175,7 @@ $current_page = floor($offset / $limit) + 1;
                             <p class="card-text">Price: <?php echo htmlspecialchars($item['product_price']); ?> <?php echo htmlspecialchars($item['currency']); ?></p>
                             <p class="card-text">Rating: <?php echo htmlspecialchars($item['product_star_rating']); ?></p>
                             <div class="d-flex justify-content-between">
-                                <a href="<?php echo get_url('Project/item.php?id=' . urlencode($item['product_id'])); ?>" class="btn btn-primary">View</a>
+                                <a href="<?php echo get_url('item.php?id=' . urlencode($item['product_id'])); ?>" class="btn btn-primary">View</a>
                                 <form method="POST" action="favorites.php">
                                     <button type="submit" name="remove_favorite_id" value="<?php echo htmlspecialchars($item['id']); ?>" class="btn btn-danger">Remove</button>
                                 </form>

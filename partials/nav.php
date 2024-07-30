@@ -75,7 +75,7 @@ if (session_status() == PHP_SESSION_NONE) {
                         </a>
                         <ul class="dropdown-menu">
                             <li class="dropdown-item"><a class="nav-link" href="<?php echo get_url('/Project/admin/create_item.php'); ?>">Create Item</a></li>
-                            <li class="dropdown-item"><a class="nav-link" href="<?php echo get_url('/Project/admin/list_items.php'); ?>">List Items</a></li>
+                            <li class="dropdown-item"><a class="nav-link" href="<?php echo get_url('/Project/admin/list_items.php'); ?>">Manage Items</a></li>
                         </ul>
                     </li>
                 <?php endif; ?>
