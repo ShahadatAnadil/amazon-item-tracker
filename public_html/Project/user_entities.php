@@ -42,7 +42,7 @@ switch ($sort_by) {
         $query .= " ORDER BY p.`product_title` ASC";
         break;
 }
-
+//COMMENT FOR USER ENTITY PULL REQUEST
 $query .= " LIMIT :limit OFFSET :offset";
 
 $db = getDB();
@@ -60,7 +60,7 @@ try {
     $stmt->execute();
     $results = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
-    // Get the total number of items
+    
     $stmt = $db->prepare("SELECT COUNT(*) as total FROM `IT202-S24-ProductDetails` p
                           LEFT JOIN `user_favorites` f ON p.id = f.item_id AND f.user_id = :user_id
                           WHERE f.user_id = :user_id");
