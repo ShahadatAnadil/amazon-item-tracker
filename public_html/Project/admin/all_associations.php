@@ -14,7 +14,7 @@ $sort_by = isset($_GET['sort_by']) ? $_GET['sort_by'] : 'product_title';
 if ($limit < 1 || $limit > 100) {
     $limit = 10;
 }
-//COMMENT FOR ASSOCIATING ANY ENTITY WITH ANY USER PULL REQUEST 
+
 $db = getDB();
 
 

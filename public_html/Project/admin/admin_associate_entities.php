@@ -5,7 +5,7 @@ if (!has_role("Admin")) {
     flash("You don't have permission to view this page", "warning");
     die(header("Location: $BASE_PATH/login.php"));
 }
-
+//COMMENT FOR ASSOCIATING ANY ENTITY WITH ANY USER PULL REQUEST 
 $entity_query = isset($_GET['entity_query']) ? trim($_GET['entity_query']) : '';
 $user_query = isset($_GET['user_query']) ? trim($_GET['user_query']) : '';
 
