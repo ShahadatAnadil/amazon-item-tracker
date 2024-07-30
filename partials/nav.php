@@ -1,6 +1,6 @@
 <?php
 require_once(__DIR__ . "/../lib/functions.php");
-
+require_once(__DIR__ . "/session.php");
 
 // Note: this is to resolve cookie issues with port numbers
 $domain = $_SERVER["HTTP_HOST"];
