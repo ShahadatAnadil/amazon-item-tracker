@@ -28,5 +28,5 @@ try {
     flash("Error deleting association", "danger");
 }
 
-die(header("Location: " . get_url('admin/all_associations.php')));
+die(header("Location: " . get_url('user_entities.php')));
 ?>

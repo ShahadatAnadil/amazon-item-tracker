@@ -29,7 +29,7 @@ $query = "SELECT p.*,
 if (!empty($search_title)) {
     $query .= " AND p.`product_title` LIKE :search_title";
 }
-
+//sha38 7/30/2024
 switch ($sort_by) {
     case 'price_asc':
         $query .= " ORDER BY p.`product_price` ASC";
@@ -54,7 +54,7 @@ $stmt->bindValue(':offset', $offset, PDO::PARAM_INT);
 if (!empty($search_title)) {
     $stmt->bindValue(':search_title', '%' . $search_title . '%', PDO::PARAM_STR);
 }
-
+//sha38 7/30/2024
 $results = [];
 try {
     $stmt->execute();
@@ -81,7 +81,7 @@ try {
     <h1>My Associated Items</h1>
     <p>Total Items: <?php echo $total_items; ?> | Showing <?php echo count($results); ?> items</p>
 
-    <!-- Filters and Sort Options -->
+    <!--  sha38 7/30/2024-->
     <form method="GET" action="<?php echo htmlspecialchars($_SERVER['PHP_SELF']); ?>" class="filter-form mb-4">
         <div class="row mb-3">
             <div class="col-md-3">
@@ -120,11 +120,11 @@ try {
                             <p class="card-text">Price: <?php echo htmlspecialchars($item['product_price']); ?> <?php echo htmlspecialchars($item['currency']); ?></p>
                             <p class="card-text">Rating: <?php echo htmlspecialchars($item['product_star_rating']); ?> (<?php echo htmlspecialchars($item['product_num_ratings']); ?> ratings)</p>
                             <div class="d-flex justify-content-between">
-                                <a href="<?php echo get_url('item.php?id=' . urlencode($item['id'])); ?>" class="btn btn-primary">View</a>
+                                <a href="<?php echo get_url('item.php?id=' . urlencode($item['id'])); ?>" class="btn btn-primary">View</a><!--sha38 7/31/2024-->
                                 <button class="btn btn-link <?php echo $item['is_favorited'] ? 'favorited' : ''; ?>" onclick="toggleFavorite(<?php echo $item['id']; ?>)">
                                     <i class="fas fa-heart"></i>
                                 </button>
-                                <button class="btn btn-danger" onclick="deleteAssociation(<?php echo $item['id']; ?>)">Delete</button>
+                                <button class="btn btn-danger" onclick="deleteAssociation(<?php echo $item['id']; ?>)">Delete</button><!--sha38 7/31/2024-->
                             </div>
                         </div>
                     </div>

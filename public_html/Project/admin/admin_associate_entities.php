@@ -11,7 +11,7 @@ $user_query = isset($_GET['user_query']) ? trim($_GET['user_query']) : '';
 
 $entities = [];
 $users = [];
-
+//sha38 7/31/2024
 if (!empty($entity_query)) {
     $db = getDB();
     $stmt = $db->prepare("SELECT * FROM `IT202-S24-ProductDetails` WHERE `product_title` LIKE :entity_query LIMIT 25");
@@ -26,7 +26,7 @@ if (!empty($user_query)) {
     $users = $stmt->fetchAll(PDO::FETCH_ASSOC);
 }
 
-if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+if ($_SERVER['REQUEST_METHOD'] === 'POST') { 
     $selected_entities = isset($_POST['selected_entities']) ? $_POST['selected_entities'] : [];
     $selected_users = isset($_POST['selected_users']) ? $_POST['selected_users'] : [];
     $db = getDB();
@@ -36,7 +36,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $stmt = $db->prepare("INSERT INTO `user_favorites` (`user_id`, `item_id`) VALUES (:user_id, :item_id)
                                   ON DUPLICATE KEY UPDATE `user_id` = :user_id, `item_id` = :item_id");
             $stmt->execute([':user_id' => $user_id, ':item_id' => $entity_id]);
-        }
+        }//sha38 7/31/2024
     }
 
     flash("Associations updated successfully", "success");
@@ -56,7 +56,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 <input type="text" name="entity_query" id="entity_query" value="<?php echo htmlspecialchars($entity_query); ?>" class="form-control">
             </div>
             <div class="col-md-6">
-                <label for="user_query">User Search:</label>
+                <label for="user_query">User Search:</label><!--sha38 7/31/2024-->
                 <input type="text" name="user_query" id="user_query" value="<?php echo htmlspecialchars($user_query); ?>" class="form-control">
             </div>
         </div>
@@ -69,7 +69,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 <div class="col-md-6">
                     <h3>Entities</h3>
                     <ul class="list-group">
-                        <?php foreach ($entities as $entity): ?>
+                        <?php foreach ($entities as $entity): ?><!--sha38 7/31/2024-->
                             <li class="list-group-item">
                                 <input type="checkbox" name="selected_entities[]" value="<?php echo htmlspecialchars($entity['id']); ?>">
                                 <?php echo htmlspecialchars($entity['product_title']); ?>
@@ -89,7 +89,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     </ul>
                 </div>
             </div>
-            <div class="mt-4">
+            <div class="mt-4"><!--sha38 7/31/2024-->
                 <button type="submit" class="btn btn-success">Apply Associations</button>
             </div>
         </form>

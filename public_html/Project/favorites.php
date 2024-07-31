@@ -9,7 +9,7 @@ if (!isset($_SESSION['user'])) {
 $user_id = $_SESSION['user']['id'];
 $db = getDB();
 
-
+//sha38 7/30/2024
 $limit = isset($_GET['limit']) ? intval($_GET['limit']) : 10;
 $offset = isset($_GET['offset']) ? intval($_GET['offset']) : 0;
 $sort_by = isset($_GET['sort_by']) ? $_GET['sort_by'] : 'product_title';
@@ -49,7 +49,7 @@ switch ($sort_by) {
         $query .= " ORDER BY p.`product_title` ASC";
         break;
 }
-
+//sha38 7/30/2024
 $total_query = "SELECT COUNT(*) as total
                 FROM user_favorites uf
                 JOIN `IT202-S24-ProductDetails` p ON uf.item_id = p.id
@@ -87,7 +87,7 @@ $stmt->bindValue(':offset', $offset, PDO::PARAM_INT);
 if (!empty($search_title)) {
     $stmt->bindValue(':search_title', '%' . $search_title . '%', PDO::PARAM_STR);
 }
-
+//sha38 7/30/2024
 $favorites = [];
 try {
     $stmt->execute();
@@ -115,12 +115,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['remove_favorite_id'])
 
 $total_pages = ceil($total_items / $limit);
 $current_page = floor($offset / $limit) + 1;
+//sha38 7/30/2024
 ?>
 
 <div class="container">
     <h1>My Favorites</h1>
 
-    <!-- Filters -->
+    <!-- sha38 7/30/2024-->
     <form method="GET" action="<?php echo htmlspecialchars($_SERVER['PHP_SELF']); ?>" class="filter-form mb-4">
         <div class="row mb-3">
             <div class="col-md-3">
@@ -159,7 +160,7 @@ $current_page = floor($offset / $limit) + 1;
             <input type="button" value="Clear Filters" class="btn btn-secondary" onclick="clearFilters()">
         </div>
     </form>
-
+    <!-- sha38 7/30/2024-->
     <p>Showing <?php echo $filtered_items_count; ?> out of <?php echo $total_items; ?> items:</p>
 
     <?php if (empty($favorites)): ?>
@@ -194,7 +195,7 @@ $current_page = floor($offset / $limit) + 1;
         </div>
     <?php endif; ?>
 </div>
-
+            <!--sha38 7/30/2024-->
 <script>
 function clearFilters() {
     window.location.href = "<?php echo htmlspecialchars($_SERVER['PHP_SELF']); ?>";

@@ -11,7 +11,7 @@ $db = getDB();
 
 $limit = isset($_GET['limit']) ? intval($_GET['limit']) : 10;
 $offset = isset($_GET['offset']) ? intval($_GET['offset']) : 0;
-
+//sha38 7/30/2024
 
 $stmt = $db->prepare("SELECT COUNT(*) as total FROM user_cart WHERE user_id = :user_id");
 $stmt->bindValue(':user_id', $user_id, PDO::PARAM_INT);
@@ -46,7 +46,7 @@ try {
     error_log("Error fetching cart items: " . var_export($e, true));
     flash("Unhandled error occurred", "danger");
 }
-
+//sha38 7/30/2024
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if (isset($_POST['remove_item_id'])) {
         $remove_item_id = intval($_POST['remove_item_id']);
@@ -86,6 +86,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         }
     }
 }
+//sha38 7/30/2024
 ?>
 
 <div class="container">
@@ -129,7 +130,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         </div>
     <?php endif; ?>
 </div>
-
+                    <!--sha38 7/30/2024-->
 <?php
 require(__DIR__ . "/../../partials/flash.php");
 ?>
