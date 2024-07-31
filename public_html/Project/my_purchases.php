@@ -5,7 +5,7 @@ if (!isset($_SESSION['user'])) {
     flash("You must be logged in to view this page", "warning");
     die(header("Location: $BASE_PATH/login.php"));
 }
-
+//sha38 7/30/2024
 $user_id = $_SESSION['user']['id'];
 $db = getDB();
 // COMMENT FOR HANDLING API DATA ASSOCIATION PULL REQUEST
@@ -38,7 +38,7 @@ try {
     error_log("Error fetching purchases: " . var_export($e, true));
     flash("Unhandled error occurred", "danger");
 }
-
+//sha38 7/30/2024
 $orders = [];
 foreach ($purchases as $purchase) {
     $order_id = $purchase['order_id'];
@@ -77,10 +77,10 @@ foreach ($purchases as $purchase) {
             </div>
         </div>
     </form>
-
+    <!--sha38 7/30/2024-->
     <?php if (empty($orders)): ?>
         <p>There is no purchase history with that ID.</p>
-    <?php else: ?>
+    <?php else: ?> 
         <?php foreach ($orders as $order): ?>
             <div class="order">
                 <h2>Order ID: <?php echo htmlspecialchars($order['order_id']); ?></h2>
@@ -108,7 +108,7 @@ foreach ($purchases as $purchase) {
         <?php endforeach; ?>
     <?php endif; ?>
 </div>
-
+                        <!--sha38 7/30/2024-->
 <script>
 function clearFilter() {
     window.location.href = "<?php echo htmlspecialchars($_SERVER['PHP_SELF']); ?>";

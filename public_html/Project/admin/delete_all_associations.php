@@ -1,11 +1,11 @@
 <?php
 require(__DIR__ . "/../../../partials/nav.php");
-
+//sha38 7/30/2024
 if (!has_role("Admin")) {
     flash("You don't have permission to view this page", "warning");
     die(header("Location: $BASE_PATH/home.php"));
 }
-
+//COMMENT FOR ALL USER ASSOCIATIONS PULL REQUEST
 $user_id = isset($_GET['user_id']) ? intval($_GET['user_id']) : -1;
 if ($user_id < 1) {
     flash("Invalid user ID", "danger");

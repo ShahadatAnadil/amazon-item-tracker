@@ -2,9 +2,8 @@
 session_start();
 require_once(__DIR__ . "/../../lib/functions.php");
 require_once(__DIR__ . "/../../lib/db.php");
-
 $response = ["success" => false, "message" => "An error occurred"];
-
+//sha38 7/30/2024
 if (isset($_GET['item_id'])) {
     $user_id = get_user_id();
     $item_id = intval($_GET['item_id']);
@@ -14,15 +13,12 @@ if (isset($_GET['item_id'])) {
         echo json_encode($response);
         exit;
     }
-
     $db = getDB();
-
     $itemCheckQuery = "SELECT id FROM `IT202-S24-ProductDetails` WHERE id = :item_id";
     $itemCheckStmt = $db->prepare($itemCheckQuery);
     $itemCheckStmt->bindValue(':item_id', $item_id, PDO::PARAM_INT);
     $itemCheckStmt->execute();
     $itemExists = $itemCheckStmt->fetch(PDO::FETCH_ASSOC);
-
     if ($itemExists) {
         $userCheckQuery = "SELECT id FROM `Users` WHERE id = :user_id";
         $userCheckStmt = $db->prepare($userCheckQuery);
@@ -57,7 +53,7 @@ if (isset($_GET['item_id'])) {
                 $response["action"] = "added";
             }
         } else {
-            $response["message"] = "User does not exist.";
+            $response["message"] = "User does not exist."; //sha38 7/30/2024
         }
     } else {
         $response["message"] = "Item does not exist.";
