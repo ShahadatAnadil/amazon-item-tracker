@@ -4,10 +4,9 @@ require_once(__DIR__ . "/../../../lib/render_functions.php");
 
 if (!has_role("Admin")) {
     flash("You don't have permission to view this page", "warning");
-    die(header("Location: $BASE_PATH" . "/home.php"));
+    die(header("Location: " . get_url('home.php')));
 }
 
-// Fetch existing item data if id is provided sha38 7/22/2024
 $item = [];
 if (isset($_GET['id'])) {
     $id = intval($_GET['id']);
@@ -18,7 +17,7 @@ if (isset($_GET['id'])) {
         $item = $stmt->fetch(PDO::FETCH_ASSOC);
         if (!$item) {
             flash("Item not found", "warning");
-            die(header("Location: $BASE_PATH" . "/admin/list_items.php"));
+            die(header("Location: " . get_url('admin/list_items.php')));
         }
     } catch (PDOException $e) {
         error_log("Error fetching item: " . var_export($e, true));
@@ -26,115 +25,103 @@ if (isset($_GET['id'])) {
     }
 }
 
-if (isset($_POST["asin"])) {
-    // Get POST data
-    $asin = se($_POST, "asin", "", false);
-    $product_title = se($_POST, "product_title", "", false);
-    $product_price = se($_POST, "product_price", "", false);
-    $product_original_price = se($_POST, "product_original_price", "", false);
-    $currency = se($_POST, "currency", "", false);
-    $country = se($_POST, "country", "", false);
-    $product_star_rating = se($_POST, "product_star_rating", "", false);
-    $product_num_ratings = se($_POST, "product_num_ratings", "", false);
-    $product_url = se($_POST, "product_url", "", false);
-    $product_photo = se($_POST, "product_photo", "", false);
-    $product_num_offers = se($_POST, "product_num_offers", "", false);
-    $product_availability = se($_POST, "product_availability", "", false);
-    $is_best_seller = isset($_POST["is_best_seller"]) ? 1 : 0;
-    $is_amazon_choice = isset($_POST["is_amazon_choice"]) ? 1 : 0;
-    $is_prime = isset($_POST["is_prime"]) ? 1 : 0;
-    $climate_pledge_friendly = isset($_POST["climate_pledge_friendly"]) ? 1 : 0;
-    $sales_volume = se($_POST, "sales_volume", "", false);
-    $about_product = se($_POST, "about_product", "", false);
-    $product_description = se($_POST, "product_description", "", false);
-    $product_information = se($_POST, "product_information", "", false);
-    $rating_distribution = se($_POST, "rating_distribution", "", false);
-    $product_photos = se($_POST, "product_photos", "", false);
-    $product_details = se($_POST, "product_details", "", false);
-    $customers_say = se($_POST, "customers_say", "", false);
-    $review_aspects = se($_POST, "review_aspects", "", false);
-    $category_path = se($_POST, "category_path", "", false);
-    $product_variations = se($_POST, "product_variations", "", false);
+function validate_field($field, $value) {
+    $errors = [];
+    switch ($field) {
+        case 'product_price':
+        case 'product_star_rating':
+            if (!is_numeric($value)) {
+                $errors[] = ucfirst(str_replace('_', ' ', $field)) . " must be a valid number.";
+            }
+            break;
+        case 'product_url':
+        case 'product_photo':
+            if (!empty($value) && !filter_var($value, FILTER_VALIDATE_URL)) {
+                $errors[] = ucfirst(str_replace('_', ' ', $field)) . " must be a valid URL.";
+            }
+            break;
+        case 'asin':
+        case 'product_title':
+        case 'about_product':
+        case 'currency':
+            if (empty($value)) {
+                $errors[] = ucfirst(str_replace('_', ' ', $field)) . " is required.";
+            }
+            break;
+        case 'product_star_rating':
+            if ($value < 0 || $value > 5) {
+                $errors[] = "Star Rating must be a number between 0 and 5.";
+            }
+            break;
+    }
+    return $errors;
+}
 
-    // Server-side validation sha38 7/22/2024
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    $required_fields = ['asin', 'product_title', 'product_price', 'about_product', 'product_star_rating', 'currency'];
+    $data = [];
     $errors = [];
 
-    if (empty($asin)) {
-        $errors[] = "ASIN is required";
-    }
-    if (empty($product_title)) {
-        $errors[] = "Product title is required";
-    }
-    if ($product_price === "" || $product_price < 0) {
-        $errors[] = "Product price must be a positive number";
-    }
-    if ($product_original_price !== "" && $product_original_price < 0) {
-        $errors[] = "Original price must be a positive number";
-    }
-    if (empty($currency)) {
-        $errors[] = "Currency is required";
-    }
-    if (empty($country)) {
-        $errors[] = "Country is required";
-    }
-    if ($product_star_rating === "" || $product_star_rating < 0 || $product_star_rating > 5) {
-        $errors[] = "Product star rating must be between 0 and 5";
-    }
-    if ($product_num_ratings === "" || $product_num_ratings < 0) {
-        $errors[] = "Number of ratings must be a positive number";
-
-    }
-    if (empty($product_url)) {
-        $errors[] = "Product URL is required";
-    }
-    if (empty($product_photo)) {
-        $errors[] = "Product photo URL is required";
-    }
-    if ($product_num_offers !== "" && $product_num_offers < 0) {
-        $errors[] = "Number of offers must be a positive number";
-        
+    foreach ($_POST as $field => $value) {
+        $value = trim($value);
+        if (in_array($field, $required_fields) || !empty($value)) {
+            $data[$field] = $value;
+            $field_errors = validate_field($field, $value);
+            if (!empty($field_errors)) {
+                $errors = array_merge($errors, $field_errors);
+            }
+        }
     }
 
-    if (count($errors) === 0) {
-        $db = getDB();
+    $db = getDB();
+    $stmt = $db->prepare("SELECT id FROM `IT202-S24-ProductDetails` WHERE asin = :asin AND id != :id");
+    $stmt->execute([":asin" => $data['asin'], ":id" => $id]);
+    $existing_item = $stmt->fetch(PDO::FETCH_ASSOC);
+    if ($existing_item) {
+        $errors[] = "An item with the same ASIN already exists.";
+    }
+
+    if (empty($errors)) {
+        $params = [
+            ":id" => $id,
+            ":asin" => $data['asin'],
+            ":product_title" => $data['product_title'],
+            ":product_price" => $data['product_price'],
+            ":product_original_price" => $data['product_original_price'] ?? null,
+            ":currency" => $data['currency'],
+            ":country" => $data['country'] ?? null,
+            ":product_star_rating" => $data['product_star_rating'],
+            ":product_num_ratings" => $data['product_num_ratings'] ?? null,
+            ":product_url" => $data['product_url'] ?? null,
+            ":product_photo" => $data['product_photo'] ?? null,
+            ":product_num_offers" => $data['product_num_offers'] ?? null,
+            ":product_availability" => $data['product_availability'] ?? null,
+            ":is_best_seller" => isset($data['is_best_seller']) ? 1 : 0,
+            ":is_amazon_choice" => isset($data['is_amazon_choice']) ? 1 : 0,
+            ":is_prime" => isset($data['is_prime']) ? 1 : 0,
+            ":climate_pledge_friendly" => isset($data['climate_pledge_friendly']) ? 1 : 0,
+            ":sales_volume" => $data['sales_volume'] ?? null,
+            ":about_product" => $data['about_product'],
+            ":product_description" => $data['product_description'] ?? null,
+            ":product_information" => $data['product_information'] ?? null,
+            ":rating_distribution" => $data['rating_distribution'] ?? null,
+            ":product_photos" => $data['product_photos'] ?? null,
+            ":product_details" => $data['product_details'] ?? null,
+            ":customers_say" => $data['customers_say'] ?? null,
+            ":review_aspects" => $data['review_aspects'] ?? null,
+            ":category_path" => $data['category_path'] ?? null,
+            ":product_variations" => $data['product_variations'] ?? null,
+            ":modified" => date('Y-m-d H:i:s')
+        ];
+
         $query = "UPDATE `IT202-S24-ProductDetails` SET
                     `asin` = :asin, `product_title` = :product_title, `product_price` = :product_price, `product_original_price` = :product_original_price, `currency` = :currency, `country` = :country, 
                     `product_star_rating` = :product_star_rating, `product_num_ratings` = :product_num_ratings, `product_url` = :product_url, `product_photo` = :product_photo, `product_num_offers` = :product_num_offers, 
                     `product_availability` = :product_availability, `is_best_seller` = :is_best_seller, `is_amazon_choice` = :is_amazon_choice, `is_prime` = :is_prime, `climate_pledge_friendly` = :climate_pledge_friendly, 
                     `sales_volume` = :sales_volume, `about_product` = :about_product, `product_description` = :product_description, `product_information` = :product_information, `rating_distribution` = :rating_distribution, 
-                    `product_photos` = :product_photos, `product_details` = :product_details, `customers_say` = :customers_say, `review_aspects` = :review_aspects, `category_path` = :category_path, `product_variations` = :product_variations
+                    `product_photos` = :product_photos, `product_details` = :product_details, `customers_say` = :customers_say, `review_aspects` = :review_aspects, `category_path` = :category_path, `product_variations` = :product_variations, 
+                    `modified` = :modified
                   WHERE id = :id";
-
-        $params = [
-            ":id" => $id,
-            ":asin" => $asin,
-            ":product_title" => $product_title,
-            ":product_price" => $product_price,
-            ":product_original_price" => $product_original_price,
-            ":currency" => $currency,
-            ":country" => $country,
-            ":product_star_rating" => $product_star_rating,
-            ":product_num_ratings" => $product_num_ratings,
-            ":product_url" => $product_url,
-            ":product_photo" => $product_photo,
-            ":product_num_offers" => $product_num_offers,
-            ":product_availability" => $product_availability,
-            ":is_best_seller" => $is_best_seller,
-            ":is_amazon_choice" => $is_amazon_choice,
-            ":is_prime" => $is_prime,
-            ":climate_pledge_friendly" => $climate_pledge_friendly,
-            ":sales_volume" => $sales_volume,
-            ":about_product" => $about_product,
-            ":product_description" => $product_description,
-            ":product_information" => $product_information,
-            ":rating_distribution" => $rating_distribution,
-            ":product_photos" => $product_photos,
-            ":product_details" => $product_details,
-            ":customers_say" => $customers_say,
-            ":review_aspects" => $review_aspects,
-            ":category_path" => $category_path,
-            ":product_variations" => $product_variations
-        ];
 
         try {
             $stmt = $db->prepare($query);
@@ -152,48 +139,151 @@ if (isset($_POST["asin"])) {
         }
     }
 }
-//sha38 7/22/2024
-$form = [
-    ["type" => "text", "name" => "asin", "placeholder" => "Item ASIN", "label" => "Item ASIN", "value" => $item['asin'] ?? "", "rules" => ["required" => "required"]],
-    ["type" => "text", "name" => "product_title", "placeholder" => "Product Title", "label" => "Product Title", "value" => $item['product_title'] ?? "", "rules" => ["required" => "required"]],
-    ["type" => "number", "name" => "product_price", "placeholder" => "Product Price", "label" => "Product Price", "value" => $item['product_price'] ?? "", "rules" => ["min" => "0"]],
-    ["type" => "number", "name" => "product_original_price", "placeholder" => "Product Original Price", "label" => "Product Original Price", "value" => $item['product_original_price'] ?? ""],
-    ["type" => "text", "name" => "currency", "placeholder" => "Currency", "label" => "Currency", "value" => $item['currency'] ?? "", "rules" => ["required" => "required"]],
-    ["type" => "text", "name" => "country", "placeholder" => "Country", "label" => "Country", "value" => $item['country'] ?? "", "rules" => ["required" => "required"]],
-    ["type" => "number", "name" => "product_star_rating", "placeholder" => "Product Star Rating", "label" => "Product Star Rating", "value" => $item['product_star_rating'] ?? "", "rules" => ["min" => "0", "max" => "5"]],
-    ["type" => "number", "name" => "product_num_ratings", "placeholder" => "Number of Ratings", "label" => "Number of Ratings", "value" => $item['product_num_ratings'] ?? "", "rules" => ["min" => "0"]],
-    ["type" => "url", "name" => "product_url", "placeholder" => "Product URL", "label" => "Product URL", "value" => $item['product_url'] ?? "", "rules" => ["required" => "required"]],
-    ["type" => "url", "name" => "product_photo", "placeholder" => "Product Photo", "label" => "Product Photo", "value" => $item['product_photo'] ?? "", "rules" => ["required" => "required"]],
-    ["type" => "number", "name" => "product_num_offers", "placeholder" => "Number of Offers", "label" => "Number of Offers", "value" => $item['product_num_offers'] ?? "", "rules" => ["min" => "0"]],
-    ["type" => "text", "name" => "product_availability", "placeholder" => "Availability", "label" => "Availability", "value" => $item['product_availability'] ?? ""],
-    ["type" => "checkbox", "name" => "is_best_seller", "label" => "Best Seller", "checked" => isset($item['is_best_seller']) ? $item['is_best_seller'] : false],
-    ["type" => "checkbox", "name" => "is_amazon_choice", "label" => "Amazon Choice", "checked" => isset($item['is_amazon_choice']) ? $item['is_amazon_choice'] : false],
-    ["type" => "checkbox", "name" => "is_prime", "label" => "Prime", "checked" => isset($item['is_prime']) ? $item['is_prime'] : false],
-    ["type" => "checkbox", "name" => "climate_pledge_friendly", "label" => "Climate Pledge Friendly", "checked" => isset($item['climate_pledge_friendly']) ? $item['climate_pledge_friendly'] : false],
-    ["type" => "text", "name" => "sales_volume", "placeholder" => "Sales Volume", "label" => "Sales Volume", "value" => $item['sales_volume'] ?? ""],
-    ["type" => "textarea", "name" => "about_product", "placeholder" => "About Product", "label" => "About Product", "value" => $item['about_product'] ?? ""],
-    ["type" => "textarea", "name" => "product_description", "placeholder" => "Product Description", "label" => "Product Description", "value" => $item['product_description'] ?? ""],
-    ["type" => "textarea", "name" => "product_information", "placeholder" => "Product Information", "label" => "Product Information", "value" => $item['product_information'] ?? ""],
-    ["type" => "textarea", "name" => "rating_distribution", "placeholder" => "Rating Distribution", "label" => "Rating Distribution", "value" => $item['rating_distribution'] ?? ""],
-    ["type" => "textarea", "name" => "product_photos", "placeholder" => "Product Photos", "label" => "Product Photos", "value" => $item['product_photos'] ?? ""],
-    ["type" => "textarea", "name" => "product_details", "placeholder" => "Product Details", "label" => "Product Details", "value" => $item['product_details'] ?? ""],
-    ["type" => "textarea", "name" => "customers_say", "placeholder" => "Customers Say", "label" => "Customers Say", "value" => $item['customers_say'] ?? ""],
-    ["type" => "textarea", "name" => "review_aspects", "placeholder" => "Review Aspects", "label" => "Review Aspects", "value" => $item['review_aspects'] ?? ""],
-    ["type" => "textarea", "name" => "category_path", "placeholder" => "Category Path", "label" => "Category Path", "value" => $item['category_path'] ?? ""],
-    ["type" => "textarea", "name" => "product_variations", "placeholder" => "Product Variations", "label" => "Product Variations", "value" => $item['product_variations'] ?? ""]
-];
 ?>
 
 <div class="container-fluid">
     <h3>Edit Item</h3>
     <form method="post" action="">
-        <?php foreach ($form as $input) {
-            render_input($input);
-        } ?>
-        <?php render_button(["text" => "Update Item", "type" => "submit"]); ?>
+        <div class="form-group">
+            <label for="asin">Item ASIN</label>
+            <input type="text" class="form-control" id="asin" name="asin" value="<?php echo htmlspecialchars($item['asin']); ?>" required>
+        </div>
+        <div class="form-group">
+            <label for="product_title">Product Title</label>
+            <input type="text" class="form-control" id="product_title" name="product_title" value="<?php echo htmlspecialchars($item['product_title']); ?>" required>
+        </div>
+        <div class="form-group">
+            <label for="product_price">Product Price</label>
+            <input type="number" step="0.01" class="form-control" id="product_price" name="product_price" value="<?php echo htmlspecialchars($item['product_price']); ?>" required>
+        </div>
+        <div class="form-group">
+            <label for="product_original_price">Product Original Price</label>
+            <input type="number" step="0.01" class="form-control" id="product_original_price" name="product_original_price" value="<?php echo htmlspecialchars($item['product_original_price']); ?>">
+        </div>
+        <div class="form-group">
+            <label for="currency">Currency</label>
+            <input type="text" class="form-control" id="currency" name="currency" value="<?php echo htmlspecialchars($item['currency']); ?>" required>
+        </div>
+        <div class="form-group">
+            <label for="country">Country</label>
+            <input type="text" class="form-control" id="country" name="country" value="<?php echo htmlspecialchars($item['country']); ?>">
+        </div>
+        <div class="form-group">
+            <label for="product_star_rating">Product Star Rating</label>
+            <input type="number" step="0.1" min="0" max="5" class="form-control" id="product_star_rating" name="product_star_rating" value="<?php echo htmlspecialchars($item['product_star_rating']); ?>" required>
+        </div>
+        <div class="form-group">
+            <label for="product_num_ratings">Number of Ratings</label>
+            <input type="number" class="form-control" id="product_num_ratings" name="product_num_ratings" value="<?php echo htmlspecialchars($item['product_num_ratings']); ?>">
+        </div>
+        <div class="form-group">
+            <label for="product_url">Product URL</label>
+            <input type="url" class="form-control" id="product_url" name="product_url" value="<?php echo htmlspecialchars($item['product_url']); ?>">
+        </div>
+        <div class="form-group">
+            <label for="product_photo">Product Photo</label>
+            <input type="url" class="form-control" id="product_photo" name="product_photo" value="<?php echo htmlspecialchars($item['product_photo']); ?>">
+        </div>
+        <div class="form-group">
+            <label for="product_num_offers">Number of Offers</label>
+            <input type="number" class="form-control" id="product_num_offers" name="product_num_offers" value="<?php echo htmlspecialchars($item['product_num_offers']); ?>">
+        </div>
+        <div class="form-group">
+            <label for="product_availability">Availability</label>
+            <input type="text" class="form-control" id="product_availability" name="product_availability" value="<?php echo htmlspecialchars($item['product_availability']); ?>">
+        </div>
+        <div class="form-check">
+            <input type="checkbox" class="form-check-input" id="is_best_seller" name="is_best_seller" <?php echo isset($item['is_best_seller']) && $item['is_best_seller'] ? 'checked' : ''; ?>>
+            <label class="form-check-label" for="is_best_seller">Best Seller</label>
+        </div>
+        <div class="form-check">
+            <input type="checkbox" class="form-check-input" id="is_amazon_choice" name="is_amazon_choice" <?php echo isset($item['is_amazon_choice']) && $item['is_amazon_choice'] ? 'checked' : ''; ?>>
+            <label class="form-check-label" for="is_amazon_choice">Amazon Choice</label>
+        </div>
+        <div class="form-check">
+            <input type="checkbox" class="form-check-input" id="is_prime" name="is_prime" <?php echo isset($item['is_prime']) && $item['is_prime'] ? 'checked' : ''; ?>>
+            <label class="form-check-label" for="is_prime">Prime</label>
+        </div>
+        <div class="form-check">
+            <input type="checkbox" class="form-check-input" id="climate_pledge_friendly" name="climate_pledge_friendly" <?php echo isset($item['climate_pledge_friendly']) && $item['climate_pledge_friendly'] ? 'checked' : ''; ?>>
+            <label class="form-check-label" for="climate_pledge_friendly">Climate Pledge Friendly</label>
+        </div>
+        <div class="form-group">
+            <label for="sales_volume">Sales Volume</label>
+            <input type="number" class="form-control" id="sales_volume" name="sales_volume" value="<?php echo htmlspecialchars($item['sales_volume']); ?>">
+        </div>
+        <div class="form-group">
+            <label for="about_product">About Product</label>
+            <textarea class="form-control" id="about_product" name="about_product" required><?php echo htmlspecialchars($item['about_product']); ?></textarea>
+        </div>
+        <div class="form-group">
+            <label for="product_description">Product Description</label>
+            <textarea class="form-control" id="product_description" name="product_description"><?php echo htmlspecialchars($item['product_description']); ?></textarea>
+        </div>
+        <div class="form-group">
+            <label for="product_information">Product Information</label>
+            <textarea class="form-control" id="product_information" name="product_information"><?php echo htmlspecialchars($item['product_information']); ?></textarea>
+        </div>
+        <div class="form-group">
+            <label for="rating_distribution">Rating Distribution</label>
+            <textarea class="form-control" id="rating_distribution" name="rating_distribution"><?php echo htmlspecialchars($item['rating_distribution']); ?></textarea>
+        </div>
+        <div class="form-group">
+            <label for="product_photos">Product Photos</label>
+            <textarea class="form-control" id="product_photos" name="product_photos"><?php echo htmlspecialchars($item['product_photos']); ?></textarea>
+        </div>
+        <div class="form-group">
+            <label for="product_details">Product Details</label>
+            <textarea class="form-control" id="product_details" name="product_details"><?php echo htmlspecialchars($item['product_details']); ?></textarea>
+        </div>
+        <div class="form-group">
+            <label for="customers_say">Customers Say</label>
+            <textarea class="form-control" id="customers_say" name="customers_say"><?php echo htmlspecialchars($item['customers_say']); ?></textarea>
+        </div>
+        <div class="form-group">
+            <label for="review_aspects">Review Aspects</label>
+            <textarea class="form-control" id="review_aspects" name="review_aspects"><?php echo htmlspecialchars($item['review_aspects']); ?></textarea>
+        </div>
+        <div class="form-group">
+            <label for="category_path">Category Path</label>
+            <textarea class="form-control" id="category_path" name="category_path"><?php echo htmlspecialchars($item['category_path']); ?></textarea>
+        </div>
+        <div class="form-group">
+            <label for="product_variations">Product Variations</label>
+            <textarea class="form-control" id="product_variations" name="product_variations"><?php echo htmlspecialchars($item['product_variations']); ?></textarea>
+        </div>
+        <button type="submit" class="btn btn-primary mt-3">Update Item</button>
     </form>
 </div>
 
 <?php
 require_once(__DIR__ . "/../../../partials/flash.php");
 ?>
+
+<style>
+.flash-message {
+    font-size: 1.2em;
+    padding: 15px;
+    border-radius: 5px;
+    margin-bottom: 15px;
+}
+.flash-message.warning {
+    background-color: #ffc107;
+    color: #856404;
+}
+.flash-message.success {
+    background-color: #28a745;
+    color: #fff;
+}
+.flash-message.danger {
+    background-color: #dc3545;
+    color: #fff;
+}
+.flash-container {
+    position: fixed;
+    top: 0;
+    width: 100%;
+    z-index: 1000;
+    text-align: center;
+}
+</style>

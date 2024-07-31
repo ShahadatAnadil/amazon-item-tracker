@@ -1,1 +1,1 @@
-SHOW COLUMNS FROM `IT202-S24-ProductDetails` LIKE 'is_api';
+ALTER TABLE `IT202-S24-ProductDetails` MODIFY COLUMN `product_availability` VARCHAR(10240);
